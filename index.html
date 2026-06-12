@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corte Seletivo — Entrar</title>
+    <link rel="stylesheet" href="login.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  
+  <body>
+    <aside class="visual-panel" id="visualPanel">
+      <div class="film-ticker-wrap">
+        <div class="film-ticker" id="filmTicker"></div>
+      </div>
+      
+      <div class="visual-bg">
+        <img 
+          src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=900&h=1200&fit=crop&auto=format" 
+          alt="Cinema" 
+          class="visual-img" 
+        />
+        <div class="visual-overlay"></div>
+      </div>
+      
+      <div class="visual-content">
+        <a href="#" class="back-link">
+          <i data-lucide="arrow-left" class="icon-sm"></i> Voltar ao catálogo
+        </a>
+        
+        <div class="visual-center">
+          <p class="visual-eyebrow">Bem-vindo ao</p>
+          <h1 class="visual-logo">Corte Seletivo</h1>
+          <p class="visual-tagline">O cinema que<br /><em>merece ser visto</em></p>
+        </div>
+        
+        <footer class="visual-footer">
+          <div class="film-strip">
+            <div class="film-hole"></div>
+            <div class="film-hole"></div>
+            <div class="film-hole"></div>
+            <div class="film-hole"></div>
+            <span class="film-strip-text">24 títulos curados · 6 gêneros</span>
+            <div class="film-hole"></div>
+            <div class="film-hole"></div>
+            <div class="film-hole"></div>
+            <div class="film-hole"></div>
+          </div>
+        </footer>
+      </div>
+    </aside>
+
+    <main class="form-panel">
+      <div class="form-inner">
+        <div class="mobile-logo">
+          <i data-lucide="clapperboard" style="color: var(--gold)"></i>
+          <span>Corte Seletivo</span>
+        </div>
+
+        <nav class="auth-tabs">
+          <a href="index.html" class="tab-btn active">Entrar</a>
+          <a href="cadastro.html" class="tab-btn">Criar conta</a>
+          <div class="tab-indicator"></div>
+        </nav>
+
+        <form id="formLogin" class="auth-form" novalidate>
+          <h2 class="form-title">Acesse sua conta</h2>
+          <p class="form-subtitle">Sua lista de filmes está esperando por você.</p>
+
+          <div class="field-group" id="loginEmailGroup">
+            <label class="field-label" for="loginEmail">E-mail</label>
+            <div class="field-wrap">
+              <i data-lucide="mail" class="field-icon"></i>
+              <input 
+                type="email" 
+                id="loginEmail" 
+                name="email" 
+                class="field-input" 
+                placeholder="seu@email.com" 
+                autocomplete="email" 
+              />
+            </div>
+            <span class="field-error" id="loginEmailError"></span>
+          </div>
+
+          <div class="field-group" id="loginPassGroup">
+            <label class="field-label" for="loginPass">
+              Senha
+              <a href="#" class="forgot-link" tabindex="-1">Esqueci a senha</a>
+            </label>
+            <div class="field-wrap">
+              <i data-lucide="lock" class="field-icon"></i>
+              <input 
+                type="password" 
+                id="loginPass" 
+                name="password" 
+                class="field-input" 
+                placeholder="••••••••" 
+                autocomplete="current-password" 
+              />
+              <button 
+                type="button" 
+                class="toggle-pass" 
+                data-target="loginPass" 
+                aria-label="Mostrar senha"
+              >
+                <i data-lucide="eye" class="eye-show"></i>
+                <i data-lucide="eye-off" class="eye-hide hidden"></i>
+              </button>
+            </div>
+            <span class="field-error" id="loginPassError"></span>
+          </div>
+
+          <div class="remember-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rememberMe" />
+              <span class="checkbox-custom"></span>
+              Manter conectado
+            </label>
+          </div>
+
+          <button type="submit" class="btn-submit" id="loginSubmit">
+            <span class="btn-text">Entrar</span>
+            <span class="btn-loader hidden">
+              <i data-lucide="loader-2" class="spinner"></i>
+            </span>
+          </button>
+
+          <div class="form-success hidden" id="loginSuccess">
+            <i data-lucide="check" style="color: var(--success)"></i>
+            Login realizado! Redirecionando…
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <script src="login.js"></script>
+    <script>lucide.createIcons();</script>
+  </body>
+</html>

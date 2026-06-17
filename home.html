@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Corte Seletivo — O Cinema que Merece Ser Visto</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,400;0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="nav-logo">
+      <i data-lucide="film" class="icon-gold"></i>
+      <span class="nav-brand">Corte Seletivo</span> 
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="#destaques">Pagina Principal</a>
+      <a href="Adicionar_Filmes/adicionarfilmes.html">Adicionar Filme</a>
+      <a href="Recomendados/filtro.html">Recomendados</a>
+      <a href="Login/index.html">Login</a>
+    </div>
+    <div class="nav-search">
+      <i data-lucide="search" class="icon-muted"></i>
+      <input type="text" id="searchInput" placeholder="Buscar..." autocomplete="off" />
+      <button id="clearSearch" class="clear-btn" style="display:none">&times;</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="stats-panel">
+      <div class="stat-item">
+        <p class="stat-num" id="statCount">30</p>
+        <p class="stat-lbl">Títulos Curados</p>
+      </div>
+      <div class="stat-item">
+        <p class="stat-num" id="statRating">8.1</p>
+        <p class="stat-lbl">Média IMDb</p>
+      </div>
+    </section>
+
+    <div class="genre-pills" id="genrePills">
+      <button class="pill active" data-genre="Todos">Todos</button>
+      <button class="pill" data-genre="Ação">Ação</button>
+      <button class="pill" data-genre="Comédia">Comédia</button>
+      <button class="pill" data-genre="Drama">Drama</button>
+      <button class="pill" data-genre="Ficção Científica">Ficção Científica</button>
+      <button class="pill" data-genre="Suspense">Suspense</button>
+      <button class="pill" data-genre="Terror">Terror</button>
+      <button class="pill" data-genre="Romance">Romance</button>
+      <button class="pill" data-genre="Animação">Animação</button>
+      <button class="pill" data-genre="Crime">Crime</button>
+      <button class="pill" data-genre="Aventura">Aventura</button>
+      <button class="pill" data-genre="Fantasia">Fantasia</button>
+      <button class="pill" data-genre="Histórico">Histórico</button>
+    </div>
+
+    <!-- SEÇÃO DE DESTAQUES -->
+    <section id="destaques" class="main-section">
+      <h2 class="section-title">Obras em Destaque</h2>
+      <div class="scroll-container">
+        <button class="scroll-btn scroll-left" data-target="featuredScroll">&#8249;</button>
+        <div class="horizontal-scroll" id="featuredScroll">
+          
+          <!-- Filme Original -->
+          <article class="movie-card is-featured" data-id="1" data-title="O Cavaleiro das Trevas" data-genres="Ação" data-original="The Dark Knight" data-year="2008" data-director="Christopher Nolan" data-rating="9.0" data-duration="2h 32min" data-synopsis="O Batman enfrenta o Coringa, um criminoso que semeia o caos em Gotham City e desafia os limites morais do herói.">
+            <div class="card-img-wrap">
+              <img src="Imagens/Batman_Cavaleiro_das_Trevas.jpg" alt="O Cavaleiro das Trevas" class="card-img" />
+              <div class="card-overlay"><span class="badge-featured">Destaque</span></div>
+            </div>
+            <div class="card-info">
+              <div class="card-meta"><span class="card-year">2008</span><span class="card-rating">★ 9.0</span></div>
+              <h3 class="card-title">O Cavaleiro das Trevas</h3>
+            </div>
+          </article>
+
+          <!-- Novos Filmes em Destaque -->
+          <article class="movie-card is-featured" data-id="3" data-title="O Poderoso Chefão" data-genres="Crime,Drama" data-original="The Godfather" data-year="1972" data-director="Francis Ford Coppola" data-rating="9.2" data-duration="2h 55min" data-synopsis="Uma família mafiosa luta para estabelecer sua supremacia nos Estados Unidos depois da Segunda Guerra Mundial.">
+            <div class="card-img-wrap">
+              <img src="Imagens/Poderoso_Chefao.jpg" alt="O Poderoso Chefão" class="card-img" />
+              <div class="card-overlay"><span class="badge-featured">Destaque</span></div>
+            </div>
+            <div class="card-info">
+              <div class="card-meta"><span class="card-year">1972</span><span class="card-rating">★ 9.2</span></div>
+              <h3 class="card-title">O Poderoso Chefão</h3>
+            </div>
+          </article>
+
+          <article class="movie-card is-featured" data-id="4" data-title="Parasita" data-genres="Drama,Suspense" data-original="Gisaengchung" data-year="2019" data-director="Bong Joon Ho" data-rating="8.5" data-duration="2h 12min" data-synopsis="A inclusão gradativa dos membros de uma família de baixa renda na rotina de uma família burguesa revela segredos sombrios.">
+            <div class="card-img-wrap">
+              <img src="Imagens/Parasita.jpg" alt="Parasita" class="card-img" />
+              <div class="card-overlay"><span class="badge-featured">Destaque</span></div>
+            </div>
+            <div class="card-info">
+              <div class="card-meta"><span class="card-year">2019</span><span class="card-rating">★ 8.5</span></div>
+              <h3 class="card-title">Parasita</h3>
+            </div>
+          </article>
+
+          <article class="movie-card is-featured" data-id="5" data-title="A Lista de Schindler" data-genres="Drama,Histórico" data-original="Schindler's List" data-year="1993" data-director="Steven Spielberg" data-rating="9.0" data-duration="3h 15min" data-synopsis="Na Polônia ocupada pelos alemães durante a Segunda Guerra Mundial, o industrial Oskar Schindler salva seus operários judeus do Holocausto.">
+            <div class="card-img-wrap">
+              <img src="Imagens/Lista_de_Schindler.jpg" alt="A Lista de Schindler" class="card-img" />
+              <div class="card-overlay"><span class="badge-featured">Destaque</span></div>
+            </div>
+            <div class="card-info">
+              <div class="card-meta"><span class="card-year">1993</span><span class="card-rating">★ 9.0</span></div>
+              <h3 class="card-title">A Lista de Schindler</h3>
+            </div>
+          </article>
+
+          <article class="movie-card is-featured" data-id="6" data-title="Interestelar" data-genres="Ficção Científica,Drama" data-original="Interstellar" data-year="2014" data-director="Christopher Nolan" data-rating="8.7" data-duration="2h 49min" data-synopsis="Uma equipe de exploradores viaja através de um buraco de minhoca no espaço em uma tentativa de garantir a sobrevivência da humanidade.">
+            <div class="card-img-wrap">
+              <img src="Imagens/Interestelar.jpg" alt="Interestelar" class="card-img" />
+              <div class="card-overlay"><span class="badge-featured">Destaque</span></div>
+            </div>
+            <div class="card-info">
+              <div class="card-meta"><span class="card-year">2014</span><span class="card-rating">★ 8.7</span></div>
+              <h3 class="card-title">Interestelar</h3>
+            </div>
+          </article>
+
+          <article class="movie-card is-featured" data-id="7" data-title="Duna" data-genres="Ficção Científica,Aventura" data-original="Dune: Part One" data-year="2021" data-director="Denis Villeneuve" data-rating="8.0" data-duration="2h 35min" data-synopsis="Paul Atreides, um jovem brilhante e talentoso nascido com um grande destino, deve viajar para o planeta mais perigoso do universo.">
+            <div class="card-img-wrap">
+              <img src="Imagens/Duna.jpg" alt="Duna" class="card-img" />
+              <div class="card-overlay"><span class="badge-featured">Destaque</span></div>
+            </div>
+            <div class="card-info">
+              <div class="card-meta"><span class="card-year">2021</span><span class="card-rating">★ 8.0</span></div>
+              <h3 class="card-title">Duna</h3>
+            </div>
+          </article>
+
+          <article class="movie-card is-featured" data-id="8" data-title="A Viagem de Chihiro" data-genres="Animação,Fantasia" data-original="Sen to Chihiro no Kamikakushi" data-year="2001" data-director="Hayao Miyazaki" data-rating="8.6" data-duration="2h 5min" data-synopsis="Durante a mudança de sua família para o interior, uma garota de 10 anos entra no mundo dos espíritos governado por deuses e bruxas.">
+            <div class="card-img-wrap">
+              <img src="Imagens/A_Viagem_de_Chihiro.jpg" alt="A Viagem de Chihiro" class="card-img" />
+              <div class="card-overlay"><span class="badge-featured">Destaque</span></div>
+            </div>
+            <div class="card-info">
+              <div class="card-meta"><span class="card-year">2001</span><span class="card-rating">★ 8.6</span></div>
+              <h3 class="card-title">A Viagem de Chihiro</h3>
+            </div>
+          </article>
+
+          <article class="movie-card is-featured" data-id="9" data-title="Corra!" data-genres="Terror,Suspense" data-original="Get Out" data-year="2017" data-director="Jordan Peele" data-rating="7.8" data-duration="1h 44min" data-synopsis="Um jovem afro-americano visita os parents de sua namorada branca durante o fim de semana, onde a percepção deles sobre ele esconde segredos sinistros.">
+            <div class="card-img-wrap">
+              <img src="Imagens/Corra!.jpg" alt="Corra!" class="card-img" />
+              <div class="card-overlay"><span class="badge-featured">Destaque</span></div>
+            </div>
+            <div class="card-info">
+              <div class="card-meta"><span class="card-year">2017</span><span class="card-rating">★ 7.8</span></div>
+              <h3 class="card-title">Corra!</h3>
+            </div>
+          </article>
+
+          <article class="movie-card is-featured" data-id="10" data-title="Blade Runner 2049" data-genres="Ficção Científica,Ação" data-original="Blade Runner 2049" data-year="2017" data-director="Denis Villeneuve" data-rating="8.0" data-duration="2h 44min" data-synopsis="Um novo blade runner descobre um segredo enterrado há muito tempo que tem o potencial de mergulhar o que resta da sociedade no caos.">
+            <div class="card-img-wrap">
+              <img src="Imagens/Blade_Runner.jpg" alt="Blade Runner 2049" class="card-img" />
+              <div class="card-overlay"><span class="badge-featured">Destaque</span></div>
+            </div>
+            <div class="card-info">
+              <div class="card-meta"><span class="card-year">2017</span><span class="card-rating">★ 8.0</span></div>
+              <h3 class="card-title">Blade Runner 2049</h3>
+            </div>
+          </article>
+
+        </div>
+        <button class="scroll-btn scroll-right" data-target="featuredScroll">&#8250;</button>
+      </div>
+    </section>
+
+    <!-- LISTAGEM POR SEÇÕES DE GÊNERO -->
+    <section id="genreSections">
+      
+      <!-- Seção: Ação -->
+      <div class="genre-section-block" data-section-genre="Ação">
+        <h2 class="section-title">Ação</h2>
+        <div class="grid-layout">
+          <!-- Filme Original -->
+          <article class="movie-card" data-id="2" data-title="Mad Max: Estrada da Fúria" data-genres="Ação" data-original="Mad Max: Fury Road" data-year="2015" data-director="George Miller" data-rating="8.1" data-duration="2h" data-synopsis="Em um mundo pós-apocalíptico, Max Rockatansky se une a Furiosa para escapar de um tirano e suas hordas.">
+            <div class="card-img-wrap"><img src="Imagens/Madmax.jpg" alt="Mad Max" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2015</span><span class="card-rating">★ 8.1</span></div><h3 class="card-title">Mad Max: Estrada da Fúria</h3></div>
+          </article>
+          <article class="movie-card" data-id="11" data-title="John Wick" data-genres="Ação,Crime" data-original="John Wick" data-year="2014" data-director="Chad Stahelski" data-rating="7.4" data-duration="1h 41min" data-synopsis="Um ex-assassino sai da aposentadoria para rastrear os gângsteres que mataram seu cachorro e roubaram seu carro.">
+            <div class="card-img-wrap"><img src="Imagens/John_Wick.jpg" alt="John Wick" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2014</span><span class="card-rating">★ 7.4</span></div><h3 class="card-title">John Wick</h3></div>
+          </article>
+          <article class="movie-card" data-id="12" data-title="Ford vs Ferrari" data-genres="Ação,Drama" data-original="Ford v Ferrari" data-year="2019" data-director="James Mangold" data-rating="8.1" data-duration="2h 32min" data-synopsis="O projetista Carroll Shelby e o piloto Ken Miles constroem um carro de corrida revolucionário para desafiar a Ferrari nas 24 Horas de Le Mans de 1966.">
+            <div class="card-img-wrap"><img src="Imagens/Ford_vs_Ferrari.jpg" alt="Ford vs Ferrari" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2019</span><span class="card-rating">★ 8.1</span></div><h3 class="card-title">Ford vs Ferrari</h3></div>
+          </article>
+          <article class="movie-card" data-id="13" data-title="Exterminador do Futuro 3" data-genres="Ação,Ficção Científica" data-original="Terminator 3: Rise of the Machines" data-year="2003" data-director="Jonathan Mostow" data-rating="6.3" data-duration="1h 49min" data-synopsis="John Connor agora vive fora da rede de computadores, mas uma nova ciborgue altamente avançada é enviada de volta no tempo para matá-lo.">
+            <div class="card-img-wrap"><img src="Imagens/Exterminador_do_Futuro_3.jpg" alt="Exterminador do Futuro 3" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2003</span><span class="card-rating">★ 6.3</span></div><h3 class="card-title">Exterminador do Futuro 3</h3></div>
+          </article>
+          <article class="movie-card" data-id="5" data-title="Trovão Tropical" data-genres="Ação,Comédia" data-original="Tropic Thunder" data-year="2008" data-director="Ben Stiller" data-rating="7.0" data-duration="1h 47min" data-synopsis="Um grupo de atores mimados filma um épico de guerra na selva e acaba se tornando um grupo de soldados reais quando são capturados por traficantes de drogas.">
+            <div class="card-img-wrap"><img src="Imagens/Trovao_Tropical.jpg" alt="Trovão Tropical" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2008</span><span class="card-rating">★ 7.0</span></div><h3 class="card-title">Trovão Tropical</h3></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Seção: Ficção Científica -->
+      <div class="genre-section-block" data-section-genre="Ficção Científica">
+        <h2 class="section-title">Ficção Científica</h2>
+        <div class="grid-layout">
+          <article class="movie-card" data-id="14" data-title="Alien, o 8º Passageiro" data-genres="Ficção Científica,Terror" data-original="Alien" data-year="1979" data-director="Ridley Scott" data-rating="8.5" data-duration="1h 57min" data-synopsis="A tripulação de uma nave comercial espacial encontra uma forma de vida fatal que invade e aterroriza o ambiente confinado.">
+            <div class="card-img-wrap"><img src="Imagens/Alien_o_8_Passageiro.jpg" alt="Alien, o 8º Passageiro" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">1979</span><span class="card-rating">★ 8.5</span></div><h3 class="card-title">Alien, o 8º Passageiro</h3></div>
+          </article>
+          <article class="movie-card" data-id="15" data-title="Devoradores de Estrelas" data-genres="Ficção Científica,Suspense" data-original="Project Hail Mary" data-year="2026" data-director="Phil Lord, Christopher Miller" data-rating="8.0" data-duration="2h" data-synopsis="Um astronauta solitário corre contra o tempo para salvar a Terra de um evento de extinção ecológica solar de proporções apocalípticas.">
+            <div class="card-img-wrap"><img src="Imagens/Devoradores_Estrelas.jpg" alt="Devoradores de Estrelas" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2026</span><span class="card-rating">★ 8.0</span></div><h3 class="card-title">Devoradores de Estrelas</h3></div>
+          </article>
+          <article class="movie-card" data-id="16" data-title="Star Wars V: O Império Contra-Ataca" data-genres="Ficção Científica,Aventura" data-original="Star Wars: Episode V - The Empire Strikes Back" data-year="1980" data-director="Irvin Kershner" data-rating="8.7" data-duration="2h 4min" data-synopsis="Após o Império dominar a base rebelde, Luke Skywalker começa seu treinamento Jedi com Mestre Yoda, enquanto seus amigos são perseguidos por Darth Vader.">
+            <div class="card-img-wrap"><img src="Imagens/Star_Wars_V.jpg" alt="Star Wars V: O Império Contra-Ataca" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">1980</span><span class="card-rating">★ 8.7</span></div><h3 class="card-title">Star Wars V: O Império Contra-Ataca</h3></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Seção: Crime -->
+      <div class="genre-section-block" data-section-genre="Crime">
+        <h2 class="section-title">Crime</h2>
+        <div class="grid-layout">
+          <article class="movie-card" data-id="3" data-title="Os Infiltrados" data-genres="Crime,Drama,Suspense" data-original="The Departed" data-year="2006" data-director="Martin Scorsese" data-rating="8.5" data-duration="2h 31min" data-synopsis="Um policial infiltrado na máfia e um mafioso infiltrado na polícia tentam se descobrir mutuamente enquanto as tensões aumentam.">
+            <div class="card-img-wrap"><img src="Imagens/Os_Infiltrados.jpg" alt="Os Infiltrados" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2006</span><span class="card-rating">★ 8.5</span></div><h3 class="card-title">Os Infiltrados</h3></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Seção: Romance -->
+      <div class="genre-section-block" data-section-genre="Romance">
+        <h2 class="section-title">Romance</h2>
+        <div class="grid-layout">
+          <article class="movie-card" data-id="17" data-title="Diário de uma Paixão" data-genres="Romance,Drama" data-original="The Notebook" data-year="2004" data-director="Nick Cassavetes" data-rating="7.8" data-duration="2h 3min" data-synopsis="Um idoso lê a história de amor de dois jovens de classes sociais diferentes para uma paciente com Alzheimer.">
+            <div class="card-img-wrap"><img src="Imagens/Diario_de_uma_Paixao.jpg" alt="Diário de uma Paixão" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2004</span><span class="card-rating">★ 7.8</span></div><h3 class="card-title">Diário de uma Paixão</h3></div>
+          </article>
+
+          <article class="movie-card" data-id="18" data-title="Questão de Tempo" data-genres="Romance,Drama,Ficção Científica" data-original="About Time" data-year="2013" data-director="Richard Curtis" data-rating="7.8" data-duration="2h 3min" data-synopsis="Ao completar 21 anos, Tim descobre que os homens de sua família têm a capacidade de viajar no tempo. Ele decide usar esse dom para conseguir uma namorada e melhorar sua vida.">
+            <div class="card-img-wrap"><img src="Imagens/Questao_de_Tempo.jpg" alt="Questão de Tempo" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2013</span><span class="card-rating">★ 7.8</span></div><h3 class="card-title">Questão de Tempo</h3></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Seção: Terror -->
+      <div class="genre-section-block" data-section-genre="Terror">
+        <h2 class="section-title">Terror</h2>
+        <div class="grid-layout">
+          <article class="movie-card" data-id="19" data-title="Hereditário" data-genres="Terror,Mistério" data-original="Hereditary" data-year="2018" data-director="Ari Aster" data-rating="7.3" data-duration="2h 7min" data-synopsis="Após a morte da matriarca, uma família começa a desvendar segredos enigmáticos e cada vez mais aterrorizantes sobre sua ancestralidade.">
+            <div class="card-img-wrap"><img src="Imagens/Hereditario.jpg" alt="Hereditário" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2018</span><span class="card-rating">★ 7.3</span></div><h3 class="card-title">Hereditário</h3></div>
+          </article>
+          <article class="movie-card" data-id="20" data-title="O Iluminado" data-genres="Terror,Drama" data-original="The Shining" data-year="1980" data-director="Stanley Kubrick" data-rating="8.4" data-duration="2h 26min" data-synopsis="Uma família se isola em um hotel durante o inverno, onde uma presença espiritual sinistra influencia o pai à violência.">
+            <div class="card-img-wrap"><img src="Imagens/O_Iluminado.jpg" alt="O Iluminado" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">1980</span><span class="card-rating">★ 8.4</span></div><h3 class="card-title">O Iluminado</h3></div>
+          </article>
+          <article class="movie-card" data-id="21" data-title="Midsommar" data-genres="Terror,Drama" data-original="Midsommar" data-year="2019" data-director="Ari Aster" data-rating="7.1" data-duration="2h 28min" data-synopsis="Um casal viaja para a Suécia para visitar o festival de verão de uma comunidade rural isolada, que se transforma em um pesadelo pagão.">
+            <div class="card-img-wrap"><img src="Imagens/Midsommar.jpg" alt="Midsommar" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2019</span><span class="card-rating">★ 7.1</span></div><h3 class="card-title">Midsommar</h3></div>
+          </article>
+          <article class="movie-card" data-id="22" data-title="Jogos Mortais 1" data-genres="Terror,Suspense" data-original="Saw" data-year="2004" data-director="James Wan" data-rating="7.6" data-duration="1h 43min" data-synopsis="Dois homens acordam em um banheiro subterrâneo secreto com ordens de matar um ao outro ou enfrentar consequências fatais planejadas por um serial killer.">
+            <div class="card-img-wrap"><img src="Imagens/Jogos_Mortais.jpg" alt="Jogos Mortais 1" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2004</span><span class="card-rating">★ 7.6</span></div><h3 class="card-title">Jogos Mortais 1</h3></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Seção: Comédia -->
+      <div class="genre-section-block" data-section-genre="Comédia">
+        <h2 class="section-title">Comédia</h2>
+        <div class="grid-layout">
+          <article class="movie-card" data-id="24" data-title="Entre Facas e Segredos" data-genres="Mistério,Comédia" data-original="Knives Out" data-year="2019" data-director="Rian Johnson" data-rating="7.9" data-duration="2h 10min" data-synopsis="Um detetive investiga a morte misteriosa do patriarca de uma família excêntrica e combativa.">
+            <div class="card-img-wrap"><img src="Imagens/Entre_Facas_e_Segredos.jpg" alt="Entre Facas e Segredos" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2019</span><span class="card-rating">★ 7.9</span></div><h3 class="card-title">Entre Facas e Segredos</h3></div>
+          </article>
+          <article class="movie-card" data-id="25" data-title="Jojo Rabbit" data-genres="Comédia,Drama" data-original="Jojo Rabbit" data-year="2019" data-director="Taika Waititi" data-rating="7.9" data-duration="1h 48min" data-synopsis="Um jovem garoto alemão pertencente à Juventude Hitlerista descobre que sua mãe está escondendo uma garota judia em seu sótão.">
+            <div class="card-img-wrap"><img src="Imagens/Jojo_Rabbit.jpg" alt="Jojo Rabbit" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2019</span><span class="card-rating">★ 7.9</span></div><h3 class="card-title">Jojo Rabbit</h3></div>
+          </article>
+          <article class="movie-card" data-id="26" data-title="O Que Fazemos nas Sombras" data-genres="Comédia,Fantasia" data-original="What We Do in the Shadows" data-year="2014" data-director="Jemaine Clement, Taika Waititi" data-rating="7.6" data-duration="1h 26min" data-synopsis="Documentário fictício que acompanha a vida cotidiana e os problemas de quatro vampiros que moram juntos.">
+            <div class="card-img-wrap"><img src="Imagens/O_Que_Fazemos_nas_Sombras.jpg" alt="O Que Fazemos nas Sombras" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2014</span><span class="card-rating">★ 7.6</span></div><h3 class="card-title">O Que Fazemos nas Sombras</h3></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Seção: Animação -->
+      <div class="genre-section-block" data-section-genre="Animação">
+        <h2 class="section-title">Animação</h2>
+        <div class="grid-layout">
+          <article class="movie-card" data-id="27" data-title="Homem-Aranha no Aranhaverso" data-genres="Animação,Ação" data-original="Spider-Man: Into the Spider-Verse" data-year="2018" data-director="Bob Persichetti, Peter Ramsey" data-rating="8.4" data-duration="1h 57min" data-synopsis="O jovem Miles Morales se torna o Homem-Aranha de seu universo e une forças com aranhas de outras dimensões para combater uma ameaça global.">
+            <div class="card-img-wrap"><img src="Imagens/Homem_Aranha.jpg" alt="Homem-Aranha no Aranhaverso" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2018</span><span class="card-rating">★ 8.4</span></div><h3 class="card-title">Homem-Aranha no Aranhaverso</h3></div>
+          </article>
+          <article class="movie-card" data-id="28" data-title="Toy Story" data-genres="Animação,Comédia" data-original="Toy Story" data-year="1995" data-director="John Lasseter" data-rating="8.3" data-duration="1h 21min" data-synopsis="Um brinquedo caubói de corda se sente ameaçado e com ciúmes quando um novo astronauta espacial substitui seu lugar de destaque.">
+            <div class="card-img-wrap"><img src="Imagens/Toy_Story.jpg" alt="Toy Story" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">1995</span><span class="card-rating">★ 8.3</span></div><h3 class="card-title">Toy Story</h3></div>
+          </article>
+          <article class="movie-card" data-id="29" data-title="Wolfwalkers" data-genres="Animação,Aventura" data-original="Wolfwalkers" data-year="2020" data-director="Tomm Moore, Ross Stewart" data-rating="8.0" data-duration="1h 43min" data-synopsis="Uma jovem aprendiz de caçadora viaja para a Irlanda com seu pai para erradicar a última matilha de lobos selvagens.">
+            <div class="card-img-wrap"><img src="Imagens/Wolfwalkers.jpg" alt="Wolfwalkers" class="card-img" /></div>
+            <div class="card-info"><div class="card-meta"><span class="card-year">2020</span><span class="card-rating">★ 8.0</span></div><h3 class="card-title">Wolfwalkers</h3></div>
+          </article>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="empty-state" id="emptyState" style="display:none">
+      <i data-lucide="clapperboard" class="empty-icon"></i>
+      <p class="empty-title">Nenhum título encontrado</p>
+      <button class="btn-outline" id="clearFilters">Limpar Filtros</button>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop" style="display: none;">
+    <div class="modal-window">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-content">
+        <div class="modal-grid">
+          <div class="modal-poster-wrap">
+            <img id="modalImg" src="" alt="Poster" class="modal-poster" />
+          </div>
+          <div class="modal-body">
+            <div class="modal-badges" id="modalBadges"></div>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <p class="modal-original" id="modalOriginal"></p>
+            <div class="modal-details">
+              <div class="modal-detail-item"><p>Direção</p><p id="modalDirector"></p></div>
+              <div class="modal-detail-item"><p>Ano</p><p id="modalYear"></p></div>
+              <div class="modal-detail-item"><p>Duração</p><p id="modalDuration"></p></div>
+              <div class="modal-detail-item"><p>Nota IMDb</p><p id="modalRating"></p></div>
+            </div>
+            <hr class="modal-divider" />
+            <p class="modal-synopsis" id="modalSynopsis"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer id="footer">
+    <div class="footer-logo">
+      <i data-lucide="film" class="icon-gold"></i>
+      <span class="nav-brand">Corte Seletivo</span>
+    </div>
+    <p class="footer-copy">&copy; 2026 Corte Seletivo. Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="javascript.js"></script>
+</body>
+</html>

@@ -12,6 +12,9 @@ const languageEl    = document.getElementById('language');
 const posterEl      = document.getElementById('poster');
 const synopsisEl    = document.getElementById('synopsis');
 const charCountEl   = document.getElementById('charCount');
+const assistidoEmEl = document.getElementById('assistidoEm');
+const starPickerEl  = document.getElementById('starPicker');
+const ratingHintEl  = document.getElementById('ratingHint');
 
 const featuredToggle = document.getElementById('featuredToggle');
 const featuredLabel  = document.getElementById('featuredLabel');
@@ -50,7 +53,7 @@ updateSavedCount();
 function updatePreview() {
   previewTitle.textContent  = titleEl.value.trim() || 'Título do filme';
   previewYear.textContent   = yearEl.value.trim()   || '—';
-  previewRating.textContent = ratingEl.value ? `★ ${parseFloat(ratingEl.value).toFixed(1)}` : '★ —';
+  previewRating.textContent = ratingEl.value ? `★ ${ratingEl.value}/5` : '★ —';
   previewGenres.textContent = selectedGenres.slice(0,2).join(' · ') || '';
 
   const url = posterEl.value.trim();
@@ -67,9 +70,45 @@ function updatePreview() {
   previewBadge.style.display = isFeatured ? 'block' : 'none';
 }
 
-[titleEl, yearEl, ratingEl, posterEl, synopsisEl].forEach(el =>
+[titleEl, yearEl, posterEl, synopsisEl].forEach(el =>
   el.addEventListener('input', updatePreview)
 );
+
+// ─── Sistema de Avaliação por Estrelas ───────────────────────────────────────
+let notaSelecionada = 0;
+
+starPickerEl.querySelectorAll('.star').forEach(star => {
+  // Hover: ilumina até a estrela sob o cursor
+  star.addEventListener('mouseenter', () => {
+    const val = parseInt(star.dataset.value);
+    starPickerEl.querySelectorAll('.star').forEach(s => {
+      s.classList.toggle('hover', parseInt(s.dataset.value) <= val);
+    });
+  });
+
+  // Mouse sai: volta ao estado selecionado
+  star.addEventListener('mouseleave', () => {
+    starPickerEl.querySelectorAll('.star').forEach(s => {
+      s.classList.remove('hover');
+    });
+  });
+
+  // Clique: fixa a nota
+  star.addEventListener('click', () => {
+    notaSelecionada = parseInt(star.dataset.value);
+    ratingEl.value = notaSelecionada;
+
+    starPickerEl.querySelectorAll('.star').forEach(s => {
+      s.classList.toggle('selected', parseInt(s.dataset.value) <= notaSelecionada);
+    });
+
+    const labels = ['', '1 — Fraco', '2 — Regular', '3 — Bom', '4 — Ótimo', '5 — Excelente'];
+    ratingHintEl.textContent = labels[notaSelecionada];
+    updatePreview();
+  });
+});
+
+
 
 // ─── Contador de caracteres ───────────────────────────────────────────────────
 synopsisEl.addEventListener('input', () => {
@@ -105,7 +144,7 @@ featuredToggle.addEventListener('click', () => {
 function validate() {
   let ok = true;
 
-  [titleEl, yearEl, ratingEl].forEach(el => el.classList.remove('error'));
+  [titleEl, yearEl].forEach(el => el.classList.remove('error'));
 
   if (!titleEl.value.trim()) {
     titleEl.classList.add('error');
@@ -115,8 +154,8 @@ function validate() {
     yearEl.classList.add('error');
     ok = false;
   }
-  if (!ratingEl.value.trim()) {
-    ratingEl.classList.add('error');
+  if (!ratingEl.value || notaSelecionada === 0) {
+    showToast('Selecione uma avaliação de 1 a 5 estrelas.', 'error');
     ok = false;
   }
   if (selectedGenres.length === 0) {
@@ -140,6 +179,7 @@ btnSave.addEventListener('click', () => {
     original:  originalEl.value.trim(),
     year:      parseInt(yearEl.value),
     duration:  durationEl.value ? parseInt(durationEl.value) : null,
+    nota:      notaSelecionada,
     rating:    parseFloat(ratingEl.value),
     director:  directorEl.value.trim(),
     country:   countryEl.value.trim(),
@@ -147,6 +187,7 @@ btnSave.addEventListener('click', () => {
     poster:    posterEl.value.trim(),
     synopsis:  synopsisEl.value.trim(),
     genres:    [...selectedGenres],
+    assistidoEm: assistidoEmEl.value || null,
     featured:  isFeatured,
     addedAt:   new Date().toISOString(),
   };
@@ -183,6 +224,10 @@ function resetForm() {
   featuredLabel.textContent = 'Não destacado';
 
   charCountEl.textContent = '0';
+  notaSelecionada = 0;
+  ratingEl.value = '';
+  starPickerEl.querySelectorAll('.star').forEach(s => s.classList.remove('selected', 'hover'));
+  ratingHintEl.textContent = 'Clique para avaliar';
   updatePreview();
 }
 
@@ -196,7 +241,7 @@ function renderSavedList() {
     <div class="saved-item" data-id="${m.id}">
       <div class="saved-item-info">
         <div class="saved-item-title">${m.title}</div>
-        <div class="saved-item-meta">${m.year} · ★ ${m.rating.toFixed(1)}</div>
+        <div class="saved-item-meta">${m.year} · ${'★'.repeat(m.nota || 0)}${'&#9734;'.repeat(5 - (m.nota || 0))} (${m.nota || '?'}/5)</div>
       </div>
       <button class="saved-item-remove" data-remove="${m.id}" title="Remover">×</button>
     </div>

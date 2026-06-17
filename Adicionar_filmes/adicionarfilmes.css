@@ -689,3 +689,28 @@ body {
   .preview-panel { flex-direction: column; }
   .preview-panel > .movie-card { flex: none; }
 }
+/* ─── Sistema de Avaliação por Estrelas ─────────────────────────────────────── */
+.star-picker {
+  display: flex;
+  gap: 6px;
+  margin: 6px 0 4px;
+}
+
+.star-picker .star {
+  font-size: 2rem;
+  color: var(--border, #3a3a3a);
+  cursor: pointer;
+  transition: color 0.15s ease, transform 0.1s ease;
+  user-select: none;
+  line-height: 1;
+}
+
+.star-picker .star.hover,
+.star-picker .star.selected {
+  color: var(--gold, #d6a843);
+  transform: scale(1.15);
+}
+
+.star-picker .star.selected {
+  transform: scale(1.05);
+}

@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (contaSalva && contaSalva.email === emailInput.value.trim() && contaSalva.senha === passInput.value) {
           localStorage.setItem('sessao_ativa', 'true');
-          executeSubmit(document.getElementById('loginSubmit'), document.getElementById('loginSuccess'), 'catalogo.html');
+          executeSubmit(document.getElementById('loginSubmit'), document.getElementById('loginSuccess'), '../home.html');
         } else {
           setError(emailGroup, emailError, 'E-mail ou senha incorretos.');
           setError(passGroup, passError, '');

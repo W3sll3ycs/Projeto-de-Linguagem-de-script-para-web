@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Corte Seletivo — Recomendados</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="recomendados.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,400;0,700;0,900;1,700&family=DM+Mono:wght=400;500&family=Inter:wght=400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script> 
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="nav-logo">
+      <i data-lucide="film" class="icon-gold"></i>
+      <span class="nav-brand">Corte Seletivo</span> 
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="../home.html">Pagina Principal</a>
+      <a href="../Adicionar_Filmes/adicionarfilmes.html">Adicionar Filme</a>
+      <a href="filtro.html" class="active-link">Recomendados</a>
+      <a href="../Login/index.html">Login</a>
+    </div>
+    <div style="width: 220px;"></div> </nav>
+
+  <main id="filterPage">
+    <section class="filter-hero">
+      <h1 class="page-main-title">Recomendações Inteligentes</h1>
+      <p class="page-subtitle">Digite um gênero para encontrar obras aclamadas com nota igual ou superior a ★ 4.0.</p>
+      
+      <div class="filter-search-box">
+        <i data-lucide="sliders-horizontal" class="icon-gold"></i>
+        <input type="text" id="genreFilterInput" placeholder="Ex: Ação, Drama, Ficção..." autocomplete="off" autofocus />
+      </div>
+    </section>
+
+    <section class="main-section">
+      <div class="grid-layout" id="recommendationsGrid"></div>
+    </section>
+
+    <div class="empty-state" id="filterEmptyState" style="display:none">
+      <i data-lucide="frown" class="empty-icon"></i>
+      <p class="empty-title">Nenhum filme de alta avaliação encontrado para este gênero.</p>
+    </div>
+  </main>
+
+  <footer id="footer">
+    <div class="footer-logo">
+      <i data-lucide="film" class="icon-gold"></i>
+      <span class="nav-brand">Corte Seletivo</span>
+    </div>
+    <p class="footer-copy">&copy; Corte Seletivo</p>
+  </footer>
+
+  <script src="recomendados.js"></script>
+</body>
+</html>

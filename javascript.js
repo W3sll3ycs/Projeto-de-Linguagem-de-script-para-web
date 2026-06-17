@@ -2,6 +2,46 @@ document.addEventListener("DOMContentLoaded", () => {
   // Inicializa os ícones do Lucide nos elementos reais do HTML
   lucide.createIcons();
 
+  // =========================================================================
+  // LÓGICA DE DADOS: MÉDIA DE NOTAS E TEMPO TOTAL (reduce)
+  // =========================================================================
+
+  // Coleta todos os cards do catálogo e extrai ratings e durações dos data-attributes
+  const todosOsCards = document.querySelectorAll(".movie-card");
+
+  // Converte "2h 32min", "1h 44min", "2h", "1h 21min" → minutos (número)
+  function parseDuration(str) {
+    if (!str) return 0;
+    const hMatch = str.match(/(\d+)h/);
+    const mMatch = str.match(/(\d+)min/);
+    const horas = hMatch ? parseInt(hMatch[1]) : 0;
+    const mins  = mMatch ? parseInt(mMatch[1]) : 0;
+    return horas * 60 + mins;
+  }
+
+  // Extrai ratings e durações de todos os cards presentes no HTML
+  const dadosCards = Array.from(todosOsCards).map(card => ({
+    rating:   parseFloat(card.getAttribute("data-rating")) || 0,
+    duracao:  parseDuration(card.getAttribute("data-duration"))
+  }));
+
+  // reduce() — Média de notas
+  const somaNotas = dadosCards.reduce((acc, filme) => acc + filme.rating, 0);
+  const mediaNota = dadosCards.length > 0 ? somaNotas / dadosCards.length : 0;
+
+  // reduce() — Tempo total em minutos
+  const totalMinutos = dadosCards.reduce((acc, filme) => acc + filme.duracao, 0);
+  const horas = Math.floor(totalMinutos / 60);
+  const minutos = totalMinutos % 60;
+
+  // Atualiza os stat cards no HTML
+  const statRatingEl = document.getElementById("statRating");
+  const statTempoEl  = document.getElementById("statTempo");
+
+  if (statRatingEl) statRatingEl.textContent = mediaNota.toFixed(1);
+  if (statTempoEl)  statTempoEl.textContent  = horas + "h " + minutos + "min";
+
+
   // Seleção de elementos estáticos do DOM
   const movieCards = document.querySelectorAll(".movie-card");
   const genreSections = document.querySelectorAll(".genre-section-block");

@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ação", "Drama", "Policial"],
     year: "2008",
     rating: 9.0,
-    img: "../Imagens/Batman_Cavaleiro_das_Trevas.jpg"
+    img: "Imagens/Batman_Cavaleiro_das_Trevas.jpg"
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ação", "Ficção Científica"],
     year: "2015",
     rating: 8.1,
-    img: "../Imagens/Madmax.jpg"
+    img: "Imagens/Madmax.jpg"
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Crime", "Drama", "Suspense"],
     year: "2006",
     rating: 8.5,
-    img: "../Imagens/Os_Infiltrados.jpg"
+    img: "Imagens/Os_Infiltrados.jpg"
   },
   {
     id: 4,
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ficção Científica", "Drama", "Aventura"],
     year: "2014",
     rating: 8.7,
-    img: "../Imagens/Interestelar.jpg"
+    img: "Imagens/Interestelar.jpg"
   },
   {
    id: 5,
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
    genres: ["Ação", "Comédia"],
    year: "2008",
    rating: 7.0,
-   img: "../Imagens/Trovao_tropical.jpg"
+   img: "Imagens/Trovao_tropical.jpg"
 },
   {
     id: 6,
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Crime", "Drama"],
     year: "1972",
     rating: 9.2,
-    img: "../Imagens/Poderoso_Chefao.jpg"
+    img: "Imagens/Poderoso_Chefao.jpg"
   },
   {
     id: 7,
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Drama", "Suspense"],
     year: "2019",
     rating: 8.5,
-    img: "../Imagens/Parasita.jpg"
+    img: "Imagens/Parasita.jpg"
   },
   {
     id: 8,
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Drama", "Histórico"],
     year: "1993",
     rating: 9.0,
-    img: "../Imagens/Lista_de_Schindler.jpg"
+    img: "Imagens/Lista_de_Schindler.jpg"
   },
   {
     id: 9,
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ficção Científica", "Aventura"],
     year: "2021",
     rating: 8.0,
-    img: "../Imagens/Duna.jpg"
+    img: "Imagens/Duna.jpg"
   },
   {
     id: 10,
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Animação", "Fantasia"],
     year: "2001",
     rating: 8.6,
-    img: "../Imagens/A_Viagem_de_Chihiro.jpg"
+    img: "Imagens/A_Viagem_de_Chihiro.jpg"
   },
   {
     id: 11,
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Terror", "Suspense"],
     year: "2017",
     rating: 7.8,
-    img: "../Imagens/Corra!.jpg"
+    img: "Imagens/Corra!.jpg"
   },
   {
     id: 12,
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ficção Científica", "Ação"],
     year: "2017",
     rating: 8.0,
-    img: "../Imagens/Blade_Runner.jpg"
+    img: "Imagens/Blade_Runner.jpg"
   },
   {
     id: 13,
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ação", "Crime"],
     year: "2014",
     rating: 7.4,
-    img: "../Imagens/John_Wick.jpg"
+    img: "Imagens/John_Wick.jpg"
   },
   {
     id: 14,
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ação", "Drama"],
     year: "2019",
     rating: 8.1,
-    img: "../Imagens/Ford_vs_Ferrari.jpg"
+    img: "Imagens/Ford_vs_Ferrari.jpg"
   },
   {
     id: 15,
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ação", "Ficção Científica"],
     year: "2003",
     rating: 6.3,
-    img: "../Imagens/Exterminador_do_Futuro_3.jpg"
+    img: "Imagens/Exterminador_do_Futuro_3.jpg"
   },
   {
     id: 16,
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ficção Científica", "Terror"],
     year: "1979",
     rating: 8.5,
-    img: "../Imagens/Alien_o_8_Passageiro.jpg"
+    img: "Imagens/Alien_o_8_Passageiro.jpg"
   },
   {
     id: 17,
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ficção Científica", "Suspense"],
     year: "2026",
     rating: 8.0,
-    img: "../Imagens/Devoradores_Estrelas.jpg"
+    img: "Imagens/Devoradores_Estrelas.jpg"
   },
   {
     id: 18,
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Ficção Científica", "Aventura"],
     year: "1980",
     rating: 8.7,
-    img: "../Imagens/Star_Wars_V.jpg"
+    img: "Imagens/Star_Wars_V.jpg"
   },
   {
     id: 19,
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Romance", "Drama"],
     year: "2004",
     rating: 7.8,
-    img: "../Imagens/Diario_de_uma_Paixao.jpg"
+    img: "Imagens/Diario_de_uma_Paixao.jpg"
   },
   {
     id: 20,
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Terror", "Mistério"],
     year: "2018",
     rating: 7.3,
-    img: "../Imagens/Hereditario.jpg"
+    img: "Imagens/Hereditario.jpg"
   },
   {
     id: 21,
@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Terror", "Drama"],
     year: "1980",
     rating: 8.4,
-    img: "../Imagens/O_Iluminado.jpg"
+    img: "Imagens/O_Iluminado.jpg"
   },
   {
     id: 22,
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Terror", "Drama"],
     year: "2019",
     rating: 7.1,
-    img: "../Imagens/Midsommar.jpg"
+    img: "Imagens/Midsommar.jpg"
   },
   {
     id: 23,
@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Terror", "Suspense"],
     year: "2004",
     rating: 7.6,
-    img: "../Imagens/Jogos_Mortais.jpg"
+    img: "Imagens/Jogos_Mortais.jpg"
   },
   {
     id: 24,
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Mistério", "Comédia"],
     year: "2019",
     rating: 7.9,
-    img: "../Imagens/Entre_Facas_e_Segredos.jpg"
+    img: "Imagens/Entre_Facas_e_Segredos.jpg"
   },
   {
     id: 25,
@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Comédia", "Drama"],
     year: "2019",
     rating: 7.9,
-    img: "../Imagens/Jojo_Rabbit.jpg"
+    img: "Imagens/Jojo_Rabbit.jpg"
   },
   {
     id: 26,
@@ -234,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Comédia", "Fantasia"],
     year: "2014",
     rating: 7.6,
-    img: "../Imagens/O_Que_Fazemos_nas_Sombras.jpg"
+    img: "Imagens/O_Que_Fazemos_nas_Sombras.jpg"
   },
   {
     id: 29,
@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Animação", "Ação"],
     year: "2018",
     rating: 8.4,
-    img: "../Imagens/Homem_Aranha.jpg"
+    img: "Imagens/Homem_Aranha.jpg"
   },
   {
     id: 30,
@@ -252,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Animação", "Comédia"],
     year: "1995",
     rating: 8.3,
-    img: "../Imagens/Toy_Story.jpg"
+    img: "Imagens/Toy_Story.jpg"
   },
   {
     id: 31,
@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Animação", "Aventura"],
     year: "2020",
     rating: 8.0,
-    img: "../Imagens/Wolfwalkers.jpg"
+    img: "Imagens/Wolfwalkers.jpg"
   },
   {
     id: 32,
@@ -270,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
     genres: ["Romance", "Drama", "Ficção Científica"],
     year: "2013",
     rating: 7.8,
-    img: "../Imagens/Questao_de_Tempo.jpg"
+    img: "Imagens/Questao_de_Tempo.jpg"
   }
 ];
 

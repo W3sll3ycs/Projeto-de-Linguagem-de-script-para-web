@@ -1,6 +1,4 @@
-/* add-movie.js */
 
-// ─── Elementos ───────────────────────────────────────────────────────────────
 const titleEl       = document.getElementById('title');
 const originalEl    = document.getElementById('original');
 const yearEl        = document.getElementById('year');
@@ -40,16 +38,70 @@ const resetModal    = document.getElementById('resetModal');
 const btnResetConfirm = document.getElementById('btnResetConfirm');
 const btnResetCancel  = document.getElementById('btnResetCancel');
 
-// ─── Estado ───────────────────────────────────────────────────────────────────
+const dadosIniciais = [
+  {
+    id: 1,
+    title: 'Interestelar',
+    original: 'Interstellar',
+    year: 2014,
+    duration: 169,
+    nota: 5,
+    rating: 5,
+    director: 'Christopher Nolan',
+    country: 'Estados Unidos',
+    language: 'Inglês',
+    poster: '',
+    synopsis: 'Uma equipe de exploradores viaja através de um buraco de minhoca no espaço em uma tentativa de garantir a sobrevivência da humanidade.',
+    genres: ['Ficção Científica', 'Drama'],
+    assistidoEm: '2025-04-10',
+    featured: true,
+    addedAt: '2025-04-10T00:00:00.000Z'
+  },
+  {
+    id: 2,
+    title: 'Oppenheimer',
+    original: 'Oppenheimer',
+    year: 2023,
+    duration: 180,
+    nota: 4,
+    rating: 4,
+    director: 'Christopher Nolan',
+    country: 'Estados Unidos',
+    language: 'Inglês',
+    poster: '',
+    synopsis: 'A história do físico J. Robert Oppenheimer e seu papel no desenvolvimento da bomba atômica durante a Segunda Guerra Mundial.',
+    genres: ['Drama', 'Histórico'],
+    assistidoEm: '2025-05-01',
+    featured: false,
+    addedAt: '2025-05-01T00:00:00.000Z'
+  },
+  {
+    id: 3,
+    title: 'Super Mario Bros: O Filme',
+    original: 'The Super Mario Bros. Movie',
+    year: 2023,
+    duration: 92,
+    nota: 3,
+    rating: 3,
+    director: 'Aaron Horvath, Michael Jelenic',
+    country: 'Estados Unidos',
+    language: 'Inglês',
+    poster: '',
+    synopsis: 'Os irmãos encanadores Mario e Luigi são transportados para um mundo mágico onde precisam salvar o Reino dos Cogumelos.',
+    genres: ['Animação', 'Aventura'],
+    assistidoEm: '2025-05-15',
+    featured: false,
+    addedAt: '2025-05-15T00:00:00.000Z'
+  }
+];
+
 let selectedGenres = [];
 let isFeatured = false;
 let movies = loadMovies();
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
 renderSavedList();
 updateSavedCount();
 
-// ─── Prévia ao vivo ───────────────────────────────────────────────────────────
 function updatePreview() {
   previewTitle.textContent  = titleEl.value.trim() || 'Título do filme';
   previewYear.textContent   = yearEl.value.trim()   || '—';
@@ -74,26 +126,21 @@ function updatePreview() {
   el.addEventListener('input', updatePreview)
 );
 
-// ─── Sistema de Avaliação por Estrelas ───────────────────────────────────────
 let notaSelecionada = 0;
 
 starPickerEl.querySelectorAll('.star').forEach(star => {
-  // Hover: ilumina até a estrela sob o cursor
   star.addEventListener('mouseenter', () => {
     const val = parseInt(star.dataset.value);
     starPickerEl.querySelectorAll('.star').forEach(s => {
       s.classList.toggle('hover', parseInt(s.dataset.value) <= val);
     });
   });
-
   // Mouse sai: volta ao estado selecionado
   star.addEventListener('mouseleave', () => {
     starPickerEl.querySelectorAll('.star').forEach(s => {
       s.classList.remove('hover');
     });
   });
-
-  // Clique: fixa a nota
   star.addEventListener('click', () => {
     notaSelecionada = parseInt(star.dataset.value);
     ratingEl.value = notaSelecionada;
@@ -109,15 +156,12 @@ starPickerEl.querySelectorAll('.star').forEach(star => {
 });
 
 
-
-// ─── Contador de caracteres ───────────────────────────────────────────────────
 synopsisEl.addEventListener('input', () => {
   const len = synopsisEl.value.length;
   charCountEl.textContent = len;
   if (len > 600) synopsisEl.value = synopsisEl.value.slice(0, 600);
 });
 
-// ─── Gêneros ──────────────────────────────────────────────────────────────────
 genreGrid.querySelectorAll('.genre-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const genre = btn.dataset.genre;
@@ -132,7 +176,6 @@ genreGrid.querySelectorAll('.genre-btn').forEach(btn => {
   });
 });
 
-// ─── Toggle destaque ─────────────────────────────────────────────────────────
 featuredToggle.addEventListener('click', () => {
   isFeatured = !isFeatured;
   featuredToggle.setAttribute('aria-pressed', String(isFeatured));
@@ -140,7 +183,6 @@ featuredToggle.addEventListener('click', () => {
   updatePreview();
 });
 
-// ─── Validação ────────────────────────────────────────────────────────────────
 function validate() {
   let ok = true;
 
@@ -166,12 +208,9 @@ function validate() {
   return ok;
 }
 
-// ─── Salvar ───────────────────────────────────────────────────────────────────
+
 btnSave.addEventListener('click', () => {
-  if (!validate()) {
-    showToast('Preencha os campos obrigatórios.', 'error');
-    return;
-  }
+  if (!validate()) return;
 
   const movie = {
     id:        Date.now(),
@@ -200,7 +239,7 @@ btnSave.addEventListener('click', () => {
   resetForm();
 });
 
-// ─── Reset ────────────────────────────────────────────────────────────────────
+
 btnReset.addEventListener('click', () => resetModal.classList.remove('hidden'));
 btnResetCancel.addEventListener('click', () => resetModal.classList.add('hidden'));
 btnResetConfirm.addEventListener('click', () => {
@@ -231,7 +270,6 @@ function resetForm() {
   updatePreview();
 }
 
-// ─── Lista de salvos ──────────────────────────────────────────────────────────
 function renderSavedList() {
   if (movies.length === 0) {
     savedList.innerHTML = '<p class="saved-empty">Nenhum filme adicionado ainda.</p>';
@@ -264,7 +302,7 @@ function updateSavedCount() {
   savedCount.textContent = movies.length;
 }
 
-// ─── Exportar JSON ────────────────────────────────────────────────────────────
+
 btnExport.addEventListener('click', () => {
   if (movies.length === 0) {
     showToast('Nenhum filme para exportar.', 'error');
@@ -280,7 +318,6 @@ btnExport.addEventListener('click', () => {
   showToast('JSON exportado com sucesso!', 'success');
 });
 
-// ─── Persistência (localStorage) ──────────────────────────────────────────────
 function saveMovies(list) {
   try { localStorage.setItem('cinelog_movies', JSON.stringify(list)); } catch {}
 }
@@ -288,11 +325,12 @@ function saveMovies(list) {
 function loadMovies() {
   try {
     const raw = localStorage.getItem('cinelog_movies');
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+    if (raw) return JSON.parse(raw);
+    localStorage.setItem('cinelog_movies', JSON.stringify(dadosIniciais));
+    return [...dadosIniciais];
+  } catch { return [...dadosIniciais]; }
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg, type = 'success') {
   toast.textContent = msg;
@@ -301,7 +339,6 @@ function showToast(msg, type = 'success') {
   toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 3000);
 }
 
-// ─── Fechar modal com ESC ─────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !resetModal.classList.contains('hidden')) {
     resetModal.classList.add('hidden');

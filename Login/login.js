@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.disabled = true;
     btnText.style.opacity = '0.5';
     btnLoader.classList.remove('hidden');
-    btnLoader.style.display = 'inline-block'; // Garante visibilidade se estivesse com display:none
+    btnLoader.style.display = 'inline-block'; 
 
     setTimeout(() => {
       btnLoader.classList.add('hidden');
@@ -109,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
       successElement.classList.remove('hidden');
       successElement.style.display = 'flex';
 
-      // Redirecionamento real baseado na URL passada por parâmetro
       setTimeout(() => {
         window.location.href = redirectUrl;
       }, 1500);
@@ -147,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (contaSalva && contaSalva.email === emailInput.value.trim() && contaSalva.senha === passInput.value) {
           localStorage.setItem('sessao_ativa', 'true');
-          executeSubmit(document.getElementById('loginSubmit'), document.getElementById('loginSuccess'), '../home.html');
+          executeSubmit(document.getElementById('loginSubmit'), document.getElementById('loginSuccess'), '../index.html');
         } else {
           setError(emailGroup, emailError, 'E-mail ou senha incorretos.');
           setError(passGroup, passError, '');

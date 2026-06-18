@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Inicializa os ícones Lucide
   lucide.createIcons();
 
-  // Mock Database - Lista de Filmes para o Filtro
   const listaFilmes = [
   {
     id: 1,
@@ -276,11 +274,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 ];
 
+  function carregarFilmesDoUsuario() {
+    try {
+      const raw = localStorage.getItem('cinelog_movies');
+      const filmesUsuario = raw ? JSON.parse(raw) : [];
+
+      filmesUsuario.forEach(m => {
+        if (listaFilmes.some(f => f.id === m.id)) return;
+
+        listaFilmes.push({
+          id:     m.id,
+          title:  m.title,
+          original: m.original || '',
+          genres: m.genres || [],
+          year:   String(m.year || ''),
+          rating: (m.nota || 0) * 2,
+          img:    m.poster || ''
+        });
+      });
+    } catch (e) {}
+  }
+
+  carregarFilmesDoUsuario();
+
   const genreInput = document.getElementById("genreFilterInput");
   const recommendationsGrid = document.getElementById("recommendationsGrid");
   const emptyState = document.getElementById("filterEmptyState");
 
-  // Função responsável por renderizar os cards no Grid HTML
   function renderizarFilmes(filmes) {
     recommendationsGrid.innerHTML = "";
 
@@ -312,16 +332,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Lógica usando filter() baseada na digitação do usuário
   function filtrarRecomendacoes() {
     const termoBusca = genreInput.value.toLowerCase().trim();
 
     const filmesFiltrados = listaFilmes.filter(filme => {
-      // Regra 1: A nota deve ser maior ou igual a 4.0
       const notaValida = filme.rating >= 4.0;
-      
-      // Regra 2: Verifica se algum dos gêneros do filme inclui o termo digitado
-      // Se o input estiver vazio, ele passa todos que têm nota válida
       const correspondeAoGenero = termoBusca === "" || filme.genres.some(genero => 
         genero.toLowerCase().includes(termoBusca)
       );
@@ -332,9 +347,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderizarFilmes(filmesFiltrados);
   }
 
-  // Escuta o evento de input (tempo real) para rodar o filtro
   genreInput.addEventListener("input", filtrarRecomendacoes);
-
-  // Inicializa a página mostrando todos os filmes recomendados (nota >= 4)
   filtrarRecomendacoes();
 });

@@ -1,4 +1,3 @@
-/* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 ::-webkit-scrollbar { display: none; }
 html { scroll-behavior: smooth; }
@@ -10,7 +9,6 @@ body {
   min-height: 100vh;
 }
 
-/* ===== VARIABLES ===== */
 :root {
   --gold: #D4A843;
   --bg: #080808;
@@ -25,12 +23,10 @@ body {
   --danger: #c0392b;
 }
 
-/* ===== KEYFRAMES ===== */
 @keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px) } to { opacity: 1; transform: translateY(0) } }
 @keyframes toastIn { from { opacity: 0; transform: translateX(20px) } to { opacity: 1; transform: translateX(0) } }
 
-/* ===== NAVBAR ===== */
 #navbar {
   display: flex;
   align-items: center;
@@ -119,7 +115,6 @@ body {
 .icon-gold  { color: var(--gold); }
 .icon-muted { color: var(--muted); }
 
-/* ===== PAGE HEADER ===== */
 .page-header {
   margin-bottom: 3rem;
   animation: slideUp 0.6s ease both;
@@ -149,7 +144,6 @@ body {
   max-width: 480px;
 }
 
-/* ===== LAYOUT ===== */
 .layout {
   display: grid;
   grid-template-columns: 1fr 300px;
@@ -158,7 +152,6 @@ body {
   animation: slideUp 0.7s ease 0.1s both;
 }
 
-/* ===== FORM PANEL ===== */
 .form-panel {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -182,7 +175,6 @@ body {
   margin: 2rem 0;
 }
 
-/* ===== FIELDS ===== */
 .field {
   display: flex;
   flex-direction: column;
@@ -250,7 +242,6 @@ body {
   gap: 1rem;
 }
 
-/* ===== GENRE GRID ===== */
 .genre-grid {
   display: flex;
   flex-wrap: wrap;
@@ -280,7 +271,6 @@ body {
   background: rgba(212,168,67,0.06);
 }
 
-/* ===== TOGGLE ===== */
 .toggle-row { display: flex; align-items: center; gap: 12px; }
 
 .toggle-btn {
@@ -328,7 +318,6 @@ body {
   color: var(--muted);
 }
 
-/* ===== ACTIONS ===== */
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -377,7 +366,6 @@ body {
 }
 .btn-danger:hover { opacity: 0.85; }
 
-/* ===== PREVIEW PANEL ===== */
 .preview-panel {
   display: flex;
   flex-direction: column;
@@ -479,7 +467,6 @@ body {
   text-overflow: ellipsis;
 }
 
-/* ===== SAVED LIST ===== */
 .saved-section {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -576,7 +563,6 @@ body {
 }
 .btn-export:hover { border-color: var(--gold); color: var(--gold); }
 
-/* ===== TOAST ===== */
 .toast {
   position: fixed;
   bottom: 2rem;
@@ -600,7 +586,6 @@ body {
 .toast.success { border-color: rgba(212,168,67,0.4); }
 .toast.error   { border-color: rgba(192,57,43,0.5); }
 
-/* ===== MODAL ===== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -637,7 +622,6 @@ body {
   gap: 12px;
 }
 
-/* ===== FOOTER ===== */
 #footer {
   margin-top: 8rem;
   border-top: 1px solid var(--border);
@@ -652,10 +636,8 @@ body {
   color: var(--subtle);
 }
 
-/* ===== UTILITIES ===== */
 .hidden { display: none !important; }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
@@ -689,7 +671,6 @@ body {
   .preview-panel { flex-direction: column; }
   .preview-panel > .movie-card { flex: none; }
 }
-/* ─── Sistema de Avaliação por Estrelas ─────────────────────────────────────── */
 .star-picker {
   display: flex;
   gap: 6px;

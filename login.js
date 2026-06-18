@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (contaSalva && contaSalva.email === emailInput.value.trim() && contaSalva.senha === passInput.value) {
           localStorage.setItem('sessao_ativa', 'true');
-          executeSubmit(document.getElementById('loginSubmit'), document.getElementById('loginSuccess'), '../index.html');
+          executeSubmit(document.getElementById('loginSubmit'), document.getElementById('loginSuccess'), 'index.html');
         } else {
           setError(emailGroup, emailError, 'E-mail ou senha incorretos.');
           setError(passGroup, passError, '');
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         localStorage.setItem('usuario_corte_seletivo', JSON.stringify(novoUsuario));
-        executeSubmit(document.getElementById('registerSubmit'), document.getElementById('registerSuccess'), 'index.html');
+        executeSubmit(document.getElementById('registerSubmit'), document.getElementById('registerSuccess'), 'login.html');
       }
     });
   }

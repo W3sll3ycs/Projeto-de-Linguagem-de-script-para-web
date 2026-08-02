@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   lucide.createIcons();
 
-  const listaFilmes = [
+  let listaFilmes = [
   {
     id: 1,
     title: "O Cavaleiro das Trevas",
@@ -289,7 +289,8 @@ document.addEventListener("DOMContentLoaded", () => {
           genres: m.genres || [],
           year:   String(m.year || ''),
           rating: (m.nota || 0) * 2,
-          img:    m.poster || ''
+          img:    m.poster || '',
+          origem: 'usuario'
         });
       });
     } catch (e) {}
@@ -314,9 +315,14 @@ document.addEventListener("DOMContentLoaded", () => {
     filmes.forEach(filme => {
       const card = document.createElement("article");
       card.className = "movie-card";
-      
+
+      const botaoExcluir = filme.origem === 'usuario'
+        ? `<button class="card-delete-btn" data-delete-id="${filme.id}" title="Excluir filme adicionado" aria-label="Excluir filme">&times;</button>`
+        : '';
+
       card.innerHTML = `
         <div class="card-img-wrap">
+          ${botaoExcluir}
           <img src="${filme.img}" alt="${filme.title}" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&h=900&fit=crop'"/>
         </div>
         <div class="card-info">
@@ -330,6 +336,32 @@ document.addEventListener("DOMContentLoaded", () => {
       
       recommendationsGrid.appendChild(card);
     });
+
+    recommendationsGrid.querySelectorAll('.card-delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = parseInt(btn.dataset.deleteId, 10);
+        excluirFilmeDoUsuario(id);
+      });
+    });
+  }
+
+  function excluirFilmeDoUsuario(id) {
+    const filme = listaFilmes.find(f => f.id === id);
+    if (!filme) return;
+
+    const confirmar = window.confirm(`Remover "${filme.title}" do catálogo? Isso também removerá o filme da página "Adicionar Filme".`);
+    if (!confirmar) return;
+
+    try {
+      const raw = localStorage.getItem('cinelog_movies');
+      const filmesUsuario = raw ? JSON.parse(raw) : [];
+      const atualizados = filmesUsuario.filter(m => m.id !== id);
+      localStorage.setItem('cinelog_movies', JSON.stringify(atualizados));
+    } catch (e) {}
+
+    listaFilmes = listaFilmes.filter(f => f.id !== id);
+    filtrarRecomendacoes();
   }
 
   function filtrarRecomendacoes() {

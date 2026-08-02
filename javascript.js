@@ -18,10 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
     duracao:  parseDuration(card.getAttribute("data-duration"))
   }));
 
+  function carregarMinutosFilmesUsuario() {
+    try {
+      const raw = localStorage.getItem("cinelog_movies");
+      const filmesUsuario = raw ? JSON.parse(raw) : [];
+      return filmesUsuario.reduce((acc, filme) => acc + (parseInt(filme.duration) || 0), 0);
+    } catch (e) {
+      return 0;
+    }
+  }
+
   const somaNotas = dadosCards.reduce((acc, filme) => acc + filme.rating, 0);
   const mediaNota = dadosCards.length > 0 ? somaNotas / dadosCards.length : 0;
 
-  const totalMinutos = dadosCards.reduce((acc, filme) => acc + filme.duracao, 0);
+  const totalMinutos = dadosCards.reduce((acc, filme) => acc + filme.duracao, 0)
+                      + carregarMinutosFilmesUsuario();
   const horas = Math.floor(totalMinutos / 60);
   const minutos = totalMinutos % 60;
 
@@ -132,6 +143,15 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("modalRating").textContent = card.getAttribute("data-rating");
       document.getElementById("modalSynopsis").textContent = card.getAttribute("data-synopsis");
       document.getElementById("modalImg").src = card.querySelector(".card-img").src;
+
+      const trailerUrl = card.getAttribute("data-trailer");
+      const modalTrailerBtn = document.getElementById("modalTrailer");
+      if (trailerUrl) {
+        modalTrailerBtn.href = trailerUrl;
+        modalTrailerBtn.style.display = "inline-flex";
+      } else {
+        modalTrailerBtn.style.display = "none";
+      }
 
       const badgesContainer = document.getElementById("modalBadges");
       badgesContainer.innerHTML = "";

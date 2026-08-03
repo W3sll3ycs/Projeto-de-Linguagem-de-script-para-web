@@ -38,66 +38,9 @@ const resetModal    = document.getElementById('resetModal');
 const btnResetConfirm = document.getElementById('btnResetConfirm');
 const btnResetCancel  = document.getElementById('btnResetCancel');
 
-const dadosIniciais = [
-  {
-    id: 1,
-    title: 'Interestelar',
-    original: 'Interstellar',
-    year: 2014,
-    duration: 169,
-    nota: 5,
-    rating: 5,
-    director: 'Christopher Nolan',
-    country: 'Estados Unidos',
-    language: 'Inglês',
-    poster: '',
-    synopsis: 'Uma equipe de exploradores viaja através de um buraco de minhoca no espaço em uma tentativa de garantir a sobrevivência da humanidade.',
-    genres: ['Ficção Científica', 'Drama'],
-    assistidoEm: '2025-04-10',
-    featured: true,
-    addedAt: '2025-04-10T00:00:00.000Z'
-  },
-  {
-    id: 2,
-    title: 'Oppenheimer',
-    original: 'Oppenheimer',
-    year: 2023,
-    duration: 180,
-    nota: 4,
-    rating: 4,
-    director: 'Christopher Nolan',
-    country: 'Estados Unidos',
-    language: 'Inglês',
-    poster: '',
-    synopsis: 'A história do físico J. Robert Oppenheimer e seu papel no desenvolvimento da bomba atômica durante a Segunda Guerra Mundial.',
-    genres: ['Drama', 'Histórico'],
-    assistidoEm: '2025-05-01',
-    featured: false,
-    addedAt: '2025-05-01T00:00:00.000Z'
-  },
-  {
-    id: 3,
-    title: 'Super Mario Bros: O Filme',
-    original: 'The Super Mario Bros. Movie',
-    year: 2023,
-    duration: 92,
-    nota: 3,
-    rating: 3,
-    director: 'Aaron Horvath, Michael Jelenic',
-    country: 'Estados Unidos',
-    language: 'Inglês',
-    poster: '',
-    synopsis: 'Os irmãos encanadores Mario e Luigi são transportados para um mundo mágico onde precisam salvar o Reino dos Cogumelos.',
-    genres: ['Animação', 'Aventura'],
-    assistidoEm: '2025-05-15',
-    featured: false,
-    addedAt: '2025-05-15T00:00:00.000Z'
-  }
-];
-
 let selectedGenres = [];
 let isFeatured = false;
-let movies = loadMovies();
+let movies = CineLogStorage.getMovies();
 
 renderSavedList();
 updateSavedCount();
@@ -231,8 +174,7 @@ btnSave.addEventListener('click', () => {
     addedAt:   new Date().toISOString(),
   };
 
-  movies.unshift(movie);
-  saveMovies(movies);
+  movies = CineLogStorage.addMovie(movie);
   renderSavedList();
   updateSavedCount();
   showToast(`"${movie.title}" adicionado com sucesso!`, 'success');
@@ -289,8 +231,7 @@ function renderSavedList() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.remove);
       const removed = movies.find(m => m.id === id);
-      movies = movies.filter(m => m.id !== id);
-      saveMovies(movies);
+      movies = CineLogStorage.removeMovie(id);
       renderSavedList();
       updateSavedCount();
       if (removed) showToast(`"${removed.title}" removido.`, 'success');
@@ -317,19 +258,6 @@ btnExport.addEventListener('click', () => {
   URL.revokeObjectURL(url);
   showToast('JSON exportado com sucesso!', 'success');
 });
-
-function saveMovies(list) {
-  try { localStorage.setItem('cinelog_movies', JSON.stringify(list)); } catch {}
-}
-
-function loadMovies() {
-  try {
-    const raw = localStorage.getItem('cinelog_movies');
-    if (raw) return JSON.parse(raw);
-    localStorage.setItem('cinelog_movies', JSON.stringify(dadosIniciais));
-    return [...dadosIniciais];
-  } catch { return [...dadosIniciais]; }
-}
 
 let toastTimer;
 function showToast(msg, type = 'success') {

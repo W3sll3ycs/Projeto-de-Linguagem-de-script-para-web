@@ -276,8 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function carregarFilmesDoUsuario() {
     try {
-      const raw = localStorage.getItem('cinelog_movies');
-      const filmesUsuario = raw ? JSON.parse(raw) : [];
+      const filmesUsuario = CineLogStorage.getMovies();
 
       filmesUsuario.forEach(m => {
         if (listaFilmes.some(f => f.id === m.id)) return;
@@ -354,10 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!confirmar) return;
 
     try {
-      const raw = localStorage.getItem('cinelog_movies');
-      const filmesUsuario = raw ? JSON.parse(raw) : [];
-      const atualizados = filmesUsuario.filter(m => m.id !== id);
-      localStorage.setItem('cinelog_movies', JSON.stringify(atualizados));
+      CineLogStorage.removeMovie(id);
     } catch (e) {}
 
     listaFilmes = listaFilmes.filter(f => f.id !== id);

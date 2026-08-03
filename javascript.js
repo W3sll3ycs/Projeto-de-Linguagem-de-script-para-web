@@ -4,46 +4,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const todosOsCards = document.querySelectorAll(".movie-card");
 
-  function parseDuration(str) {
-    if (!str) return 0;
-    const hMatch = str.match(/(\d+)h/);
-    const mMatch = str.match(/(\d+)min/);
-    const horas = hMatch ? parseInt(hMatch[1]) : 0;
-    const mins  = mMatch ? parseInt(mMatch[1]) : 0;
-    return horas * 60 + mins;
-  }
-
   const dadosCards = Array.from(todosOsCards).map(card => ({
     rating:   parseFloat(card.getAttribute("data-rating")) || 0,
-    duracao:  parseDuration(card.getAttribute("data-duration"))
+    duracao:  CineLogStorage.parseDuration(card.getAttribute("data-duration"))
   }));
-
-  function carregarMinutosFilmesUsuario() {
-    try {
-      const raw = localStorage.getItem("cinelog_movies");
-      const filmesUsuario = raw ? JSON.parse(raw) : [];
-      return filmesUsuario.reduce((acc, filme) => acc + (parseInt(filme.duration) || 0), 0);
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  const somaNotas = dadosCards.reduce((acc, filme) => acc + filme.rating, 0);
-  const mediaNota = dadosCards.length > 0 ? somaNotas / dadosCards.length : 0;
-
-  const totalMinutos = dadosCards.reduce((acc, filme) => acc + filme.duracao, 0)
-                      + carregarMinutosFilmesUsuario();
-  const horas = Math.floor(totalMinutos / 60);
-  const minutos = totalMinutos % 60;
 
   const statRatingEl = document.getElementById("statRating");
   const statTempoEl  = document.getElementById("statTempo");
+  const statCountEl  = document.getElementById("statCount");
 
-  if (statRatingEl) statRatingEl.textContent = mediaNota.toFixed(1);
-  if (statTempoEl)  statTempoEl.textContent  = horas + "h " + minutos + "min";
+  function atualizarEstatisticas() {
+    const somaNotas = dadosCards.reduce((acc, filme) => acc + filme.rating, 0);
+    const mediaNota = dadosCards.length > 0 ? somaNotas / dadosCards.length : 0;
 
-  const statCountEl = document.getElementById("statCount");
-  if (statCountEl) statCountEl.textContent = dadosCards.length;
+    const totalMinutos = dadosCards.reduce((acc, filme) => acc + filme.duracao, 0)
+                        + CineLogStorage.getTotalUserMinutes();
+    const horas = Math.floor(totalMinutos / 60);
+    const minutos = totalMinutos % 60;
+
+    if (statRatingEl) statRatingEl.textContent = mediaNota.toFixed(1);
+    if (statTempoEl)  statTempoEl.textContent  = horas + "h " + minutos + "min";
+    if (statCountEl)  statCountEl.textContent  = dadosCards.length;
+  }
+
+  atualizarEstatisticas();
+
+  // Recalcula quando a página volta a ficar visível (ex.: restaurada pelo
+  // cache do navegador ao clicar em "voltar" vindo de Recomendados), já
+  // que nesse caso o DOMContentLoaded não dispara de novo e os minutos
+  // antigos ficavam presos na tela.
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      atualizarEstatisticas();
+    }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      atualizarEstatisticas();
+    }
+  });
 
 
   const movieCards = document.querySelectorAll(".movie-card");

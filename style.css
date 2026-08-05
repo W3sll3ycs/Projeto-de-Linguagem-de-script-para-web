@@ -245,7 +245,7 @@ main {
 
 /* ===== MOVIE CARDS ===== */
 .movie-card {
-  flex: 0 0 240px; /* para scroll horizontal */
+  flex: 0 0 240px;
   background: var(--card-bg);
   border: 1px solid var(--border);
   cursor: pointer;
@@ -254,7 +254,7 @@ main {
 }
 
 .grid-layout .movie-card {
-  flex: none; /* reseta o flex no formato grid */
+  flex: none;
 }
 
 .movie-card:hover {
@@ -457,6 +457,35 @@ main {
   line-height: 1.6;
 }
 
+.btn-trailer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 10px 22px;
+  background: var(--gold);
+  color: #0d0d0d;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  border: 1px solid var(--gold);
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-trailer:hover {
+  background: transparent;
+  color: var(--gold);
+}
+
+.btn-trailer i {
+  width: 18px;
+  height: 18px;
+}
+
 /* ===== EMPTY STATE ===== */
 .empty-state {
   display: flex;
@@ -518,21 +547,14 @@ main {
 .icon-muted { color: var(--muted); }
 
 
-/* =========================================================================
-   SESSÃO NOVA: CONTROLE DE ESTADO (JS)
-   ========================================================================= */
-
-/* Classe utilitária caso queira esconder via classList no futuro */
 .hidden {
   display: none !important;
 }
 
-/* Garante que o efeito de scroll horizontal lide de forma suave com elementos sumindo */
 .horizontal-scroll::-webkit-scrollbar {
   display: none;
 }
 
-/* Responsividade Básica para o Grid de Filmes e Modal Estático */
 @media (max-width: 768px) {
   #navbar {
     flex-direction: column;

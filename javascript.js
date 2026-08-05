@@ -1,8 +1,51 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Inicializa os ícones do Lucide nos elementos reais do HTML
+
   lucide.createIcons();
 
-  // Seleção de elementos estáticos do DOM
+  const todosOsCards = document.querySelectorAll(".movie-card");
+
+  const dadosCards = Array.from(todosOsCards).map(card => ({
+    rating:   parseFloat(card.getAttribute("data-rating")) || 0,
+    duracao:  CineLogStorage.parseDuration(card.getAttribute("data-duration"))
+  }));
+
+  const statRatingEl = document.getElementById("statRating");
+  const statTempoEl  = document.getElementById("statTempo");
+  const statCountEl  = document.getElementById("statCount");
+
+  function atualizarEstatisticas() {
+    const somaNotas = dadosCards.reduce((acc, filme) => acc + filme.rating, 0);
+    const mediaNota = dadosCards.length > 0 ? somaNotas / dadosCards.length : 0;
+
+    const totalMinutos = dadosCards.reduce((acc, filme) => acc + filme.duracao, 0)
+                        + CineLogStorage.getTotalUserMinutes();
+    const horas = Math.floor(totalMinutos / 60);
+    const minutos = totalMinutos % 60;
+
+    if (statRatingEl) statRatingEl.textContent = mediaNota.toFixed(1);
+    if (statTempoEl)  statTempoEl.textContent  = horas + "h " + minutos + "min";
+    if (statCountEl)  statCountEl.textContent  = dadosCards.length;
+  }
+
+  atualizarEstatisticas();
+
+  // Recalcula quando a página volta a ficar visível (ex.: restaurada pelo
+  // cache do navegador ao clicar em "voltar" vindo de Recomendados), já
+  // que nesse caso o DOMContentLoaded não dispara de novo e os minutos
+  // antigos ficavam presos na tela.
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      atualizarEstatisticas();
+    }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      atualizarEstatisticas();
+    }
+  });
+
+
   const movieCards = document.querySelectorAll(".movie-card");
   const genreSections = document.querySelectorAll(".genre-section-block");
   const searchInput = document.getElementById("searchInput");
@@ -11,16 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const emptyState = document.getElementById("emptyState");
   const clearFiltersBtn = document.getElementById("clearFilters");
 
-  // Elementos do Modal
   const modal = document.getElementById("modalBackdrop");
   const modalClose = document.getElementById("modalClose");
 
   let activeGenre = "Todos";
   let searchQuery = "";
 
-  // =========================================================================
-  // LOGICA DE COMPORTAMENTO: FILTROS E BUSCA VISUAL
-  // =========================================================================
   function aplicarFiltros() {
     let totalVisiveis = 0;
     const query = searchQuery.toLowerCase().trim();
@@ -33,14 +72,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const correspondeBusca = (query === "" || title.includes(query));
 
       if (pertenceAoGenero && correspondeBusca) {
-        card.style.display = "block"; // ou o display original correspondente
+        card.style.display = "block"; 
         totalVisiveis++;
       } else {
         card.style.display = "none";
       }
     });
 
-    // Controla a visibilidade das seções de gênero inteiras para não ficarem vazias
     genreSections.forEach(section => {
       const secaoGenero = section.getAttribute("data-section-genre");
       const possuiFilmeVisivel = Array.from(section.querySelectorAll(".movie-card"))
@@ -53,7 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Esconde ou mostra a seção de destaques dependendo do filtro de gênero
     const secaoDestaques = document.getElementById("destaques");
     if (secaoDestaques) {
       const possuiDestaqueVisivel = Array.from(secaoDestaques.querySelectorAll(".movie-card"))
@@ -61,18 +98,15 @@ document.addEventListener("DOMContentLoaded", () => {
       secaoDestaques.style.display = possuiDestaqueVisivel ? "block" : "none";
     }
 
-    // Exibe o Estado Vazio se nenhum filme sobrou na tela
     emptyState.style.display = totalVisiveis === 0 ? "flex" : "none";
   }
 
-  // Evento de Digitação na Busca
   searchInput.addEventListener("input", () => {
     searchQuery = searchInput.value;
     clearSearchBtn.style.display = searchQuery ? "flex" : "none";
     aplicarFiltros();
   });
 
-  // Limpar Busca
   clearSearchBtn.addEventListener("click", () => {
     searchQuery = "";
     searchInput.value = "";
@@ -80,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
     aplicarFiltros();
   });
 
-  // Cliques nos Botões de Gênero (Pills)
   genrePills.forEach(pill => {
     pill.addEventListener("click", () => {
       genrePills.forEach(p => p.classList.remove("active"));
@@ -90,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Botão do Estado Vazio para restaurar os filtros
   clearFiltersBtn.addEventListener("click", () => {
     searchQuery = "";
     activeGenre = "Todos";
@@ -101,12 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
     aplicarFiltros();
   });
 
-  // =========================================================================
-  // LOGICA DE COMPORTAMENTO: ABERTURA DO MODAL DINÂMICO
-  // =========================================================================
   movieCards.forEach(card => {
     card.addEventListener("click", () => {
-      // Captura os dados embutidos no próprio HTML do card clicado
       document.getElementById("modalTitle").textContent = card.getAttribute("data-title");
       document.getElementById("modalOriginal").textContent = card.getAttribute("data-original");
       document.getElementById("modalDirector").textContent = card.getAttribute("data-director");
@@ -116,7 +144,15 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("modalSynopsis").textContent = card.getAttribute("data-synopsis");
       document.getElementById("modalImg").src = card.querySelector(".card-img").src;
 
-      // Trata as tags de gênero dentro do modal
+      const trailerUrl = card.getAttribute("data-trailer");
+      const modalTrailerBtn = document.getElementById("modalTrailer");
+      if (trailerUrl) {
+        modalTrailerBtn.href = trailerUrl;
+        modalTrailerBtn.style.display = "inline-flex";
+      } else {
+        modalTrailerBtn.style.display = "none";
+      }
+
       const badgesContainer = document.getElementById("modalBadges");
       badgesContainer.innerHTML = "";
       card.getAttribute("data-genres").split(",").forEach(g => {
@@ -125,8 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
         span.textContent = g;
         badgesContainer.appendChild(span);
       });
-
-      // Abre visualmente o modal aplicando display flex e trava o scroll de fundo
       modal.style.display = "flex";
       document.body.style.overflow = "hidden";
     });
@@ -145,9 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") fecharModal();
   });
 
-  // =========================================================================
-  // LOGICA DE COMPORTAMENTO: BOTÕES DE SCROLL HORIZONTAL
-  // =========================================================================
   document.querySelectorAll(".scroll-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const targetElement = document.getElementById(btn.dataset.target);

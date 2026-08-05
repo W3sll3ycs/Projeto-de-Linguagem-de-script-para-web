@@ -1,6 +1,4 @@
-/* add-movie.js */
 
-// ─── Elementos ───────────────────────────────────────────────────────────────
 const titleEl       = document.getElementById('title');
 const originalEl    = document.getElementById('original');
 const yearEl        = document.getElementById('year');
@@ -12,6 +10,9 @@ const languageEl    = document.getElementById('language');
 const posterEl      = document.getElementById('poster');
 const synopsisEl    = document.getElementById('synopsis');
 const charCountEl   = document.getElementById('charCount');
+const assistidoEmEl = document.getElementById('assistidoEm');
+const starPickerEl  = document.getElementById('starPicker');
+const ratingHintEl  = document.getElementById('ratingHint');
 
 const featuredToggle = document.getElementById('featuredToggle');
 const featuredLabel  = document.getElementById('featuredLabel');
@@ -37,20 +38,17 @@ const resetModal    = document.getElementById('resetModal');
 const btnResetConfirm = document.getElementById('btnResetConfirm');
 const btnResetCancel  = document.getElementById('btnResetCancel');
 
-// ─── Estado ───────────────────────────────────────────────────────────────────
 let selectedGenres = [];
 let isFeatured = false;
-let movies = loadMovies();
+let movies = CineLogStorage.getMovies();
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
 renderSavedList();
 updateSavedCount();
 
-// ─── Prévia ao vivo ───────────────────────────────────────────────────────────
 function updatePreview() {
   previewTitle.textContent  = titleEl.value.trim() || 'Título do filme';
   previewYear.textContent   = yearEl.value.trim()   || '—';
-  previewRating.textContent = ratingEl.value ? `★ ${parseFloat(ratingEl.value).toFixed(1)}` : '★ —';
+  previewRating.textContent = ratingEl.value ? `★ ${ratingEl.value}/5` : '★ —';
   previewGenres.textContent = selectedGenres.slice(0,2).join(' · ') || '';
 
   const url = posterEl.value.trim();
@@ -67,18 +65,46 @@ function updatePreview() {
   previewBadge.style.display = isFeatured ? 'block' : 'none';
 }
 
-[titleEl, yearEl, ratingEl, posterEl, synopsisEl].forEach(el =>
+[titleEl, yearEl, posterEl, synopsisEl].forEach(el =>
   el.addEventListener('input', updatePreview)
 );
 
-// ─── Contador de caracteres ───────────────────────────────────────────────────
+let notaSelecionada = 0;
+
+starPickerEl.querySelectorAll('.star').forEach(star => {
+  star.addEventListener('mouseenter', () => {
+    const val = parseInt(star.dataset.value);
+    starPickerEl.querySelectorAll('.star').forEach(s => {
+      s.classList.toggle('hover', parseInt(s.dataset.value) <= val);
+    });
+  });
+  // Mouse sai: volta ao estado selecionado
+  star.addEventListener('mouseleave', () => {
+    starPickerEl.querySelectorAll('.star').forEach(s => {
+      s.classList.remove('hover');
+    });
+  });
+  star.addEventListener('click', () => {
+    notaSelecionada = parseInt(star.dataset.value);
+    ratingEl.value = notaSelecionada;
+
+    starPickerEl.querySelectorAll('.star').forEach(s => {
+      s.classList.toggle('selected', parseInt(s.dataset.value) <= notaSelecionada);
+    });
+
+    const labels = ['', '1 — Fraco', '2 — Regular', '3 — Bom', '4 — Ótimo', '5 — Excelente'];
+    ratingHintEl.textContent = labels[notaSelecionada];
+    updatePreview();
+  });
+});
+
+
 synopsisEl.addEventListener('input', () => {
   const len = synopsisEl.value.length;
   charCountEl.textContent = len;
   if (len > 600) synopsisEl.value = synopsisEl.value.slice(0, 600);
 });
 
-// ─── Gêneros ──────────────────────────────────────────────────────────────────
 genreGrid.querySelectorAll('.genre-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const genre = btn.dataset.genre;
@@ -93,7 +119,6 @@ genreGrid.querySelectorAll('.genre-btn').forEach(btn => {
   });
 });
 
-// ─── Toggle destaque ─────────────────────────────────────────────────────────
 featuredToggle.addEventListener('click', () => {
   isFeatured = !isFeatured;
   featuredToggle.setAttribute('aria-pressed', String(isFeatured));
@@ -101,11 +126,10 @@ featuredToggle.addEventListener('click', () => {
   updatePreview();
 });
 
-// ─── Validação ────────────────────────────────────────────────────────────────
 function validate() {
   let ok = true;
 
-  [titleEl, yearEl, ratingEl].forEach(el => el.classList.remove('error'));
+  [titleEl, yearEl].forEach(el => el.classList.remove('error'));
 
   if (!titleEl.value.trim()) {
     titleEl.classList.add('error');
@@ -115,8 +139,8 @@ function validate() {
     yearEl.classList.add('error');
     ok = false;
   }
-  if (!ratingEl.value.trim()) {
-    ratingEl.classList.add('error');
+  if (!ratingEl.value || notaSelecionada === 0) {
+    showToast('Selecione uma avaliação de 1 a 5 estrelas.', 'error');
     ok = false;
   }
   if (selectedGenres.length === 0) {
@@ -127,12 +151,9 @@ function validate() {
   return ok;
 }
 
-// ─── Salvar ───────────────────────────────────────────────────────────────────
+
 btnSave.addEventListener('click', () => {
-  if (!validate()) {
-    showToast('Preencha os campos obrigatórios.', 'error');
-    return;
-  }
+  if (!validate()) return;
 
   const movie = {
     id:        Date.now(),
@@ -140,6 +161,7 @@ btnSave.addEventListener('click', () => {
     original:  originalEl.value.trim(),
     year:      parseInt(yearEl.value),
     duration:  durationEl.value ? parseInt(durationEl.value) : null,
+    nota:      notaSelecionada,
     rating:    parseFloat(ratingEl.value),
     director:  directorEl.value.trim(),
     country:   countryEl.value.trim(),
@@ -147,19 +169,19 @@ btnSave.addEventListener('click', () => {
     poster:    posterEl.value.trim(),
     synopsis:  synopsisEl.value.trim(),
     genres:    [...selectedGenres],
+    assistidoEm: assistidoEmEl.value || null,
     featured:  isFeatured,
     addedAt:   new Date().toISOString(),
   };
 
-  movies.unshift(movie);
-  saveMovies(movies);
+  movies = CineLogStorage.addMovie(movie);
   renderSavedList();
   updateSavedCount();
   showToast(`"${movie.title}" adicionado com sucesso!`, 'success');
   resetForm();
 });
 
-// ─── Reset ────────────────────────────────────────────────────────────────────
+
 btnReset.addEventListener('click', () => resetModal.classList.remove('hidden'));
 btnResetCancel.addEventListener('click', () => resetModal.classList.add('hidden'));
 btnResetConfirm.addEventListener('click', () => {
@@ -183,10 +205,13 @@ function resetForm() {
   featuredLabel.textContent = 'Não destacado';
 
   charCountEl.textContent = '0';
+  notaSelecionada = 0;
+  ratingEl.value = '';
+  starPickerEl.querySelectorAll('.star').forEach(s => s.classList.remove('selected', 'hover'));
+  ratingHintEl.textContent = 'Clique para avaliar';
   updatePreview();
 }
 
-// ─── Lista de salvos ──────────────────────────────────────────────────────────
 function renderSavedList() {
   if (movies.length === 0) {
     savedList.innerHTML = '<p class="saved-empty">Nenhum filme adicionado ainda.</p>';
@@ -196,7 +221,7 @@ function renderSavedList() {
     <div class="saved-item" data-id="${m.id}">
       <div class="saved-item-info">
         <div class="saved-item-title">${m.title}</div>
-        <div class="saved-item-meta">${m.year} · ★ ${m.rating.toFixed(1)}</div>
+        <div class="saved-item-meta">${m.year} · ${'★'.repeat(m.nota || 0)}${'&#9734;'.repeat(5 - (m.nota || 0))} (${m.nota || '?'}/5)</div>
       </div>
       <button class="saved-item-remove" data-remove="${m.id}" title="Remover">×</button>
     </div>
@@ -206,8 +231,7 @@ function renderSavedList() {
     btn.addEventListener('click', () => {
       const id = parseInt(btn.dataset.remove);
       const removed = movies.find(m => m.id === id);
-      movies = movies.filter(m => m.id !== id);
-      saveMovies(movies);
+      movies = CineLogStorage.removeMovie(id);
       renderSavedList();
       updateSavedCount();
       if (removed) showToast(`"${removed.title}" removido.`, 'success');
@@ -219,7 +243,7 @@ function updateSavedCount() {
   savedCount.textContent = movies.length;
 }
 
-// ─── Exportar JSON ────────────────────────────────────────────────────────────
+
 btnExport.addEventListener('click', () => {
   if (movies.length === 0) {
     showToast('Nenhum filme para exportar.', 'error');
@@ -235,19 +259,6 @@ btnExport.addEventListener('click', () => {
   showToast('JSON exportado com sucesso!', 'success');
 });
 
-// ─── Persistência (localStorage) ──────────────────────────────────────────────
-function saveMovies(list) {
-  try { localStorage.setItem('cinelog_movies', JSON.stringify(list)); } catch {}
-}
-
-function loadMovies() {
-  try {
-    const raw = localStorage.getItem('cinelog_movies');
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
-}
-
-// ─── Toast ────────────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg, type = 'success') {
   toast.textContent = msg;
@@ -256,7 +267,6 @@ function showToast(msg, type = 'success') {
   toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 3000);
 }
 
-// ─── Fechar modal com ESC ─────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !resetModal.classList.contains('hidden')) {
     resetModal.classList.add('hidden');

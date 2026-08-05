@@ -18,10 +18,10 @@
     <span class="nav-brand">Corte Seletivo</span>
   </div>
   <div class="nav-links" id="navLinks">
-    <a href="../home.html">Pagina Principal</a>
+    <a href="index.html">Pagina Principal</a>
     <a href="adicionarfilmes.html" class="active">Adicionar Filme</a>
-    <a href="../Recomendados/filtro.html">Recomendados</a>
-    <a href="../Login/index.html">Login</a>
+    <a href="filtro.html">Recomendados</a>
+    <a href="login.html">Login</a>
   </div>
   <div class="nav-search">
     <i data-lucide="search" class="icon-muted"></i>
@@ -68,14 +68,27 @@
             </div>
           </div>
 
-          <div class="row-2">
-            <div class="field">
-              <label for="rating">Nota (0–10) <span class="req">*</span></label>
-              <input id="rating" type="number" placeholder="8.5" min="0" max="10" step="0.1"/>
+          <div class="field">
+            <label>Avaliação por Estrelas <span class="req">*</span></label>
+            <div class="star-picker" id="starPicker" role="group" aria-label="Avaliação de 1 a 5 estrelas">
+              <span class="star" data-value="1" title="1 estrela">★</span>
+              <span class="star" data-value="2" title="2 estrelas">★</span>
+              <span class="star" data-value="3" title="3 estrelas">★</span>
+              <span class="star" data-value="4" title="4 estrelas">★</span>
+              <span class="star" data-value="5" title="5 estrelas">★</span>
             </div>
+            <input type="hidden" id="rating" />
+            <span class="field-hint" id="ratingHint">Clique para avaliar</span>
+          </div>
+
+          <div class="row-2">
             <div class="field">
               <label for="director">Diretor</label>
               <input id="director" type="text" placeholder="Ex: David Fincher"/>
+            </div>
+            <div class="field">
+              <label for="assistidoEm">Assistido em</label>
+              <input id="assistidoEm" type="date"/>
             </div>
           </div>
         </div>
@@ -215,6 +228,7 @@
     <p class="footer-copy">Corte Seletivo</p>
   </footer>
 
+  <script src="storage.js"></script>
   <script src="adicionarfilmes.js"></script>
 </body>
 </html>

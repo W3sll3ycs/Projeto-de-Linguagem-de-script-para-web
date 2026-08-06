@@ -13,12 +13,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const statTempoEl  = document.getElementById("statTempo");
   const statCountEl  = document.getElementById("statCount");
 
-  function atualizarEstatisticas() {
+  async function atualizarEstatisticas() {
     const somaNotas = dadosCards.reduce((acc, filme) => acc + filme.rating, 0);
     const mediaNota = dadosCards.length > 0 ? somaNotas / dadosCards.length : 0;
 
+    const minutosUsuario = await CineLogStorage.getTotalUserMinutes();
     const totalMinutos = dadosCards.reduce((acc, filme) => acc + filme.duracao, 0)
-                        + CineLogStorage.getTotalUserMinutes();
+                        + minutosUsuario;
     const horas = Math.floor(totalMinutos / 60);
     const minutos = totalMinutos % 60;
 
@@ -29,10 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   atualizarEstatisticas();
 
-  // Recalcula quando a página volta a ficar visível (ex.: restaurada pelo
-  // cache do navegador ao clicar em "voltar" vindo de Recomendados), já
-  // que nesse caso o DOMContentLoaded não dispara de novo e os minutos
-  // antigos ficavam presos na tela.
   window.addEventListener("pageshow", (event) => {
     if (event.persisted) {
       atualizarEstatisticas();

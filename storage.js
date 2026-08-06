@@ -1,124 +1,162 @@
-/**
- * CineLogStorage
- * ----------------
- * Módulo único responsável por toda a leitura/escrita dos filmes do
- * usuário no localStorage (chave "cinelog_movies") e por utilitários
- * relacionados (parse de duração, etc).
- *
- * Antes essa lógica estava duplicada em javascript.js, recomendados.js
- * e adicionarfilmes.js — cada arquivo lia/gravava o localStorage do seu
- * próprio jeito, o que já causou bugs de sincronização (ex.: minutos que
- * não atualizavam depois de excluir um filme).
- *
- * Este script deve ser incluído ANTES dos demais (javascript.js,
- * recomendados.js, adicionarfilmes.js) em cada página HTML:
- *
- *   <script src="storage.js"></script>
- *   <script src="javascript.js"></script>
- */
+
 const CineLogStorage = (() => {
-  const CHAVE = "cinelog_movies";
+  const API_BASE = 'http://localhost:3000';
+  const CHAVE_SESSAO = 'cinelog_sessao';
 
-  const FILMES_INICIAIS = [
-    {
-      id: 1,
-      title: "Interestelar",
-      original: "Interstellar",
-      year: 2014,
-      duration: 169,
-      nota: 5,
-      rating: 5,
-      director: "Christopher Nolan",
-      country: "Estados Unidos",
-      language: "Inglês",
-      poster: "",
-      synopsis: "Uma equipe de exploradores viaja através de um buraco de minhoca no espaço em uma tentativa de garantir a sobrevivência da humanidade.",
-      genres: ["Ficção Científica", "Drama"],
-      assistidoEm: "2025-04-10",
-      featured: true,
-      addedAt: "2025-04-10T00:00:00.000Z"
-    },
-    {
-      id: 2,
-      title: "Oppenheimer",
-      original: "Oppenheimer",
-      year: 2023,
-      duration: 180,
-      nota: 4,
-      rating: 4,
-      director: "Christopher Nolan",
-      country: "Estados Unidos",
-      language: "Inglês",
-      poster: "",
-      synopsis: "A história do físico J. Robert Oppenheimer e seu papel no desenvolvimento da bomba atômica durante a Segunda Guerra Mundial.",
-      genres: ["Drama", "Histórico"],
-      assistidoEm: "2025-05-01",
-      featured: false,
-      addedAt: "2025-05-01T00:00:00.000Z"
-    },
-    {
-      id: 3,
-      title: "Super Mario Bros: O Filme",
-      original: "The Super Mario Bros. Movie",
-      year: 2023,
-      duration: 92,
-      nota: 3,
-      rating: 3,
-      director: "Aaron Horvath, Michael Jelenic",
-      country: "Estados Unidos",
-      language: "Inglês",
-      poster: "",
-      synopsis: "Os irmãos encanadores Mario e Luigi são transportados para um mundo mágico onde precisam salvar o Reino dos Cogumelos.",
-      genres: ["Animação", "Aventura"],
-      assistidoEm: "2025-05-15",
-      featured: false,
-      addedAt: "2025-05-15T00:00:00.000Z"
-    }
-  ];
-
-  /** Lê a lista de filmes do usuário. Faz a semeadura inicial se ainda não existir. */
-  function getMovies() {
+  function getUsuarioLogado() {
     try {
-      const raw = localStorage.getItem(CHAVE);
-      if (raw) return JSON.parse(raw);
-      localStorage.setItem(CHAVE, JSON.stringify(FILMES_INICIAIS));
-      return [...FILMES_INICIAIS];
+      const raw = localStorage.getItem(CHAVE_SESSAO);
+      return raw ? JSON.parse(raw) : null;
     } catch (e) {
-      return [...FILMES_INICIAIS];
+      return null;
     }
   }
 
-  /** Sobrescreve a lista inteira de filmes do usuário. */
-  function saveMovies(lista) {
+  function setSessao(usuario) {
+    localStorage.setItem(CHAVE_SESSAO, JSON.stringify(usuario));
+  }
+
+  function limparSessao() {
+    localStorage.removeItem(CHAVE_SESSAO);
+  }
+
+  function estaLogado() {
+    return !!getUsuarioLogado();
+  }
+
+  async function request(caminho, options = {}) {
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+
+    let resp;
     try {
-      localStorage.setItem(CHAVE, JSON.stringify(lista));
-      return true;
+      resp = await fetch(`${API_BASE}${caminho}`, { ...options, headers });
     } catch (e) {
-      return false;
+      throw new Error('Não foi possível conectar à API. Verifique se o json-server está rodando (npm run json-server).');
+    }
+
+    if (!resp.ok) {
+      throw new Error(`Erro na comunicação com a API (status ${resp.status}).`);
+    }
+
+    return resp.status === 204 ? null : resp.json();
+  }
+
+  async function cadastrar(nome, email, senha) {
+    const emailNormalizado = email.trim().toLowerCase();
+
+    const existentes = await request(`/usuarios?email=${encodeURIComponent(emailNormalizado)}`);
+    if (existentes.length > 0) {
+      throw new Error('Já existe uma conta cadastrada com este e-mail.');
+    }
+
+    const usuario = await request('/usuarios', {
+      method: 'POST',
+      body: JSON.stringify({ nome: nome.trim(), email: emailNormalizado, senha })
+    });
+
+    setSessao(usuario);
+    return usuario;
+  }
+
+  async function login(email, senha) {
+    const emailNormalizado = email.trim().toLowerCase();
+
+    const encontrados = await request(
+      `/usuarios?email=${encodeURIComponent(emailNormalizado)}&senha=${encodeURIComponent(senha)}`
+    );
+
+    if (encontrados.length === 0) {
+      throw new Error('E-mail ou senha incorretos.');
+    }
+
+    setSessao(encontrados[0]);
+    return encontrados[0];
+  }
+
+  function logout() {
+    limparSessao();
+  }
+
+  async function getMovies() {
+    try {
+      const filmes = await request('/filmes');
+      const usuarioLogado = getUsuarioLogado();
+
+      return filmes
+        .slice()
+        .sort((a, b) => b.id - a.id)
+        .map(f => ({
+          ...f,
+
+          canDelete: !!usuarioLogado && usuarioLogado.id === f.addedByUserId
+        }));
+    } catch (e) {
+      return [];
     }
   }
 
-  /** Adiciona um novo filme no topo da lista. Retorna a lista atualizada. */
-  function addMovie(filme) {
-    const lista = getMovies();
-    lista.unshift(filme);
-    saveMovies(lista);
-    return lista;
+  async function addMovie(filme) {
+    const usuario = getUsuarioLogado();
+    if (!usuario) {
+      throw new Error('Você precisa entrar para adicionar um filme.');
+    }
+
+    const payload = {
+      ...filme,
+      addedByUserId: usuario.id,
+      addedByName: usuario.nome,
+      addedAt: new Date().toISOString()
+    };
+
+    const criado = await request('/filmes', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    return { ...criado, canDelete: true };
   }
 
-  /** Remove um filme pelo id. Retorna a lista atualizada. */
-  function removeMovie(id) {
-    const lista = getMovies().filter(m => m.id !== id);
-    saveMovies(lista);
-    return lista;
+  async function updateMovie(id, filme) {
+    const usuario = getUsuarioLogado();
+    const atual = await request(`/filmes/${id}`);
+
+    if (!usuario || atual.addedByUserId !== usuario.id) {
+      throw new Error('Só quem adicionou este filme pode editá-lo.');
+    }
+
+    const payload = {
+      ...atual,
+      ...filme,
+      id: atual.id,
+      addedByUserId: atual.addedByUserId,
+      addedByName: atual.addedByName,
+      addedAt: atual.addedAt
+    };
+
+    const atualizado = await request(`/filmes/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload)
+    });
+
+    return { ...atualizado, canDelete: true };
   }
 
-  /** Soma a duração (em minutos) de todos os filmes do usuário. */
-  function getTotalUserMinutes() {
-    return getMovies().reduce((acc, filme) => acc + (parseInt(filme.duration) || 0), 0);
+  async function removeMovie(id) {
+    const usuario = getUsuarioLogado();
+    const atual = await request(`/filmes/${id}`);
+
+    if (!usuario || atual.addedByUserId !== usuario.id) {
+      throw new Error('Só quem adicionou este filme pode excluí-lo.');
+    }
+
+    await request(`/filmes/${id}`, { method: 'DELETE' });
   }
 
-  /** Converte strings como "2h 55min" para minutos totais (número). */
+  async function getTotalUserMinutes() {
+    const filmes = await getMovies();
+    return filmes.reduce((acc, filme) => acc + (parseInt(filme.duration) || 0), 0);
+  }
+
   function parseDuration(str) {
     if (!str) return 0;
     const hMatch = str.match(/(\d+)h/);
@@ -130,10 +168,38 @@ const CineLogStorage = (() => {
 
   return {
     getMovies,
-    saveMovies,
     addMovie,
+    updateMovie,
     removeMovie,
     getTotalUserMinutes,
-    parseDuration
+    parseDuration,
+    cadastrar,
+    login,
+    logout,
+    getUsuarioLogado,
+    estaLogado
   };
 })();
+
+document.addEventListener('DOMContentLoaded', () => {
+  const navLinks = document.getElementById('navLinks');
+  if (!navLinks) return;
+
+  const linkLogin = Array.from(navLinks.querySelectorAll('a')).find(
+    a => a.getAttribute('href') === 'login.html'
+  );
+  if (!linkLogin) return;
+
+  const usuario = CineLogStorage.getUsuarioLogado();
+  if (!usuario) return;
+
+  linkLogin.textContent = `Olá, ${usuario.nome.split(' ')[0]} · Sair`;
+  linkLogin.href = '#';
+  linkLogin.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (confirm('Deseja sair da sua conta?')) {
+      CineLogStorage.logout();
+      window.location.reload();
+    }
+  });
+});

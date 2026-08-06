@@ -1,0 +1,11 @@
+{
+  "name": "corte-seletivo",
+  "version": "2.0.0",
+  "description": "Corte Seletivo — catálogo de filmes. API simulada com json-server (Miniprojeto 2).",
+  "scripts": {
+    "json-server": "json-server --watch db.json --port 3000"
+  },
+  "devDependencies": {
+    "json-server": "^0.17.4"
+  }
+}

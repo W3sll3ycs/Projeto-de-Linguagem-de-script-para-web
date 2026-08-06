@@ -274,28 +274,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 ];
 
-  function carregarFilmesDoUsuario() {
+  async function carregarFilmesDoUsuario() {
     try {
-      const filmesUsuario = CineLogStorage.getMovies();
+      const filmesUsuario = await CineLogStorage.getMovies();
 
       filmesUsuario.forEach(m => {
-        if (listaFilmes.some(f => f.id === m.id)) return;
-
         listaFilmes.push({
-          id:     m.id,
-          title:  m.title,
-          original: m.original || '',
-          genres: m.genres || [],
-          year:   String(m.year || ''),
-          rating: (m.nota || 0) * 2,
-          img:    m.poster || '',
-          origem: 'usuario'
+          id:          `db-${m.id}`,
+          rawId:       m.id,
+          title:       m.title,
+          original:    m.original || '',
+          genres:      m.genres || [],
+          year:        String(m.year || ''),
+          rating:      (m.nota || 0) * 2,
+          img:         m.poster || '',
+          origem:      'usuario',
+          addedByName: m.addedByName,
+          canDelete:   !!m.canDelete
         });
       });
     } catch (e) {}
   }
-
-  carregarFilmesDoUsuario();
 
   const genreInput = document.getElementById("genreFilterInput");
   const recommendationsGrid = document.getElementById("recommendationsGrid");
@@ -315,13 +314,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("article");
       card.className = "movie-card";
 
-      const botaoExcluir = filme.origem === 'usuario'
+      const podeExcluir = filme.origem === 'usuario' && filme.canDelete;
+      const botaoExcluir = podeExcluir
         ? `<button class="card-delete-btn" data-delete-id="${filme.id}" title="Excluir filme adicionado" aria-label="Excluir filme">&times;</button>`
+        : '';
+
+      const badgeAdicionadoPor = filme.origem === 'usuario' && filme.addedByName
+        ? `<div class="card-overlay"><span class="badge-added-by" title="Adicionado por ${filme.addedByName}"><i data-lucide="user"></i>${filme.addedByName}</span></div>`
         : '';
 
       card.innerHTML = `
         <div class="card-img-wrap">
           ${botaoExcluir}
+          ${badgeAdicionadoPor}
           <img src="${filme.img}" alt="${filme.title}" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&h=900&fit=crop'"/>
         </div>
         <div class="card-info">
@@ -332,20 +337,21 @@ document.addEventListener("DOMContentLoaded", () => {
           <h3 class="card-title">${filme.title}</h3>
         </div>
       `;
-      
+
       recommendationsGrid.appendChild(card);
     });
+
+    if (window.lucide) lucide.createIcons();
 
     recommendationsGrid.querySelectorAll('.card-delete-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const id = parseInt(btn.dataset.deleteId, 10);
-        excluirFilmeDoUsuario(id);
+        excluirFilmeDoUsuario(btn.dataset.deleteId);
       });
     });
   }
 
-  function excluirFilmeDoUsuario(id) {
+  async function excluirFilmeDoUsuario(id) {
     const filme = listaFilmes.find(f => f.id === id);
     if (!filme) return;
 
@@ -353,11 +359,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!confirmar) return;
 
     try {
-      CineLogStorage.removeMovie(id);
-    } catch (e) {}
-
-    listaFilmes = listaFilmes.filter(f => f.id !== id);
-    filtrarRecomendacoes();
+      await CineLogStorage.removeMovie(filme.rawId);
+      listaFilmes = listaFilmes.filter(f => f.id !== id);
+      filtrarRecomendacoes();
+    } catch (err) {
+      alert(err.message || 'Não foi possível remover o filme. Só quem adicionou pode excluí-lo.');
+    }
   }
 
   function filtrarRecomendacoes() {
@@ -365,7 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const filmesFiltrados = listaFilmes.filter(filme => {
       const notaValida = filme.rating >= 4.0;
-      const correspondeAoGenero = termoBusca === "" || filme.genres.some(genero => 
+      const correspondeAoGenero = termoBusca === "" || filme.genres.some(genero =>
         genero.toLowerCase().includes(termoBusca)
       );
 
@@ -376,5 +383,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   genreInput.addEventListener("input", filtrarRecomendacoes);
-  filtrarRecomendacoes();
+
+  carregarFilmesDoUsuario().then(filtrarRecomendacoes);
 });

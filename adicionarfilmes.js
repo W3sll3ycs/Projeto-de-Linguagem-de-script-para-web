@@ -40,10 +40,24 @@ const btnResetCancel  = document.getElementById('btnResetCancel');
 
 let selectedGenres = [];
 let isFeatured = false;
-let movies = CineLogStorage.getMovies();
+let notaSelecionada = 0;
+let movies = [];
+let editingId = null;
 
-renderSavedList();
-updateSavedCount();
+function mostrarAvisoLogin() {
+  const header = document.querySelector('.page-header');
+  if (!header || document.querySelector('.login-required-banner')) return;
+
+  const aviso = document.createElement('div');
+  aviso.className = 'login-required-banner';
+  aviso.innerHTML = 'Você precisa <a href="login.html">entrar</a> para adicionar filmes ao catálogo. ' +
+    'Pode preencher o formulário livremente, mas salvar exige estar logado.';
+  header.appendChild(aviso);
+}
+
+if (!CineLogStorage.estaLogado()) {
+  mostrarAvisoLogin();
+}
 
 function updatePreview() {
   previewTitle.textContent  = titleEl.value.trim() || 'Título do filme';
@@ -69,8 +83,6 @@ function updatePreview() {
   el.addEventListener('input', updatePreview)
 );
 
-let notaSelecionada = 0;
-
 starPickerEl.querySelectorAll('.star').forEach(star => {
   star.addEventListener('mouseenter', () => {
     const val = parseInt(star.dataset.value);
@@ -78,7 +90,6 @@ starPickerEl.querySelectorAll('.star').forEach(star => {
       s.classList.toggle('hover', parseInt(s.dataset.value) <= val);
     });
   });
-  // Mouse sai: volta ao estado selecionado
   star.addEventListener('mouseleave', () => {
     starPickerEl.querySelectorAll('.star').forEach(s => {
       s.classList.remove('hover');
@@ -97,7 +108,6 @@ starPickerEl.querySelectorAll('.star').forEach(star => {
     updatePreview();
   });
 });
-
 
 synopsisEl.addEventListener('input', () => {
   const len = synopsisEl.value.length;
@@ -151,12 +161,16 @@ function validate() {
   return ok;
 }
 
+btnSave.addEventListener('click', async () => {
+  if (!CineLogStorage.estaLogado()) {
+    showToast('Você precisa entrar para adicionar um filme.', 'error');
+    setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+    return;
+  }
 
-btnSave.addEventListener('click', () => {
   if (!validate()) return;
 
   const movie = {
-    id:        Date.now(),
     title:     titleEl.value.trim(),
     original:  originalEl.value.trim(),
     year:      parseInt(yearEl.value),
@@ -170,22 +184,88 @@ btnSave.addEventListener('click', () => {
     synopsis:  synopsisEl.value.trim(),
     genres:    [...selectedGenres],
     assistidoEm: assistidoEmEl.value || null,
-    featured:  isFeatured,
-    addedAt:   new Date().toISOString(),
+    featured:  isFeatured
   };
 
-  movies = CineLogStorage.addMovie(movie);
-  renderSavedList();
-  updateSavedCount();
-  showToast(`"${movie.title}" adicionado com sucesso!`, 'success');
-  resetForm();
+  btnSave.disabled = true;
+  try {
+    if (editingId != null) {
+      const filmeAtualizado = await CineLogStorage.updateMovie(editingId, movie);
+      const idx = movies.findIndex(m => m.id === editingId);
+      if (idx !== -1) movies[idx] = filmeAtualizado;
+      renderSavedList();
+      updateSavedCount();
+      showToast(`"${filmeAtualizado.title}" atualizado com sucesso!`, 'success');
+      cancelarEdicao();
+    } else {
+      const novoFilme = await CineLogStorage.addMovie(movie);
+      movies.unshift(novoFilme);
+      renderSavedList();
+      updateSavedCount();
+      showToast(`"${novoFilme.title}" adicionado com sucesso!`, 'success');
+      resetForm();
+    }
+  } catch (err) {
+    showToast(err.message || 'Não foi possível salvar o filme.', 'error');
+  } finally {
+    btnSave.disabled = false;
+  }
 });
 
+function iniciarEdicao(id) {
+  const filme = movies.find(m => m.id === id);
+  if (!filme) return;
+
+  editingId = id;
+
+  titleEl.value      = filme.title || '';
+  originalEl.value   = filme.original || '';
+  yearEl.value       = filme.year || '';
+  durationEl.value   = filme.duration || '';
+  directorEl.value   = filme.director || '';
+  countryEl.value    = filme.country || '';
+  languageEl.value   = filme.language || '';
+  posterEl.value     = filme.poster || '';
+  synopsisEl.value   = filme.synopsis || '';
+  assistidoEmEl.value = filme.assistidoEm || '';
+
+  charCountEl.textContent = synopsisEl.value.length;
+
+  notaSelecionada = filme.nota || 0;
+  ratingEl.value  = notaSelecionada || '';
+  starPickerEl.querySelectorAll('.star').forEach(s => {
+    s.classList.toggle('selected', parseInt(s.dataset.value) <= notaSelecionada);
+  });
+  const labels = ['', '1 — Fraco', '2 — Regular', '3 — Bom', '4 — Ótimo', '5 — Excelente'];
+  ratingHintEl.textContent = notaSelecionada ? labels[notaSelecionada] : 'Clique para avaliar';
+
+  selectedGenres = [...(filme.genres || [])];
+  genreGrid.querySelectorAll('.genre-btn').forEach(btn => {
+    btn.classList.toggle('active', selectedGenres.includes(btn.dataset.genre));
+  });
+
+  isFeatured = !!filme.featured;
+  featuredToggle.setAttribute('aria-pressed', String(isFeatured));
+  featuredLabel.textContent = isFeatured ? 'Destacado' : 'Não destacado';
+
+  updatePreview();
+  btnSave.textContent = 'Salvar edição';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  showToast('Editando filme — altere os campos e salve.', 'success');
+}
+
+function cancelarEdicao() {
+  editingId = null;
+  btnSave.textContent = 'Salvar filme';
+  resetForm();
+}
 
 btnReset.addEventListener('click', () => resetModal.classList.remove('hidden'));
 btnResetCancel.addEventListener('click', () => resetModal.classList.add('hidden'));
 btnResetConfirm.addEventListener('click', () => {
   resetModal.classList.add('hidden');
+  editingId = null;
+  btnSave.textContent = 'Salvar filme';
   resetForm();
   showToast('Formulário limpo.', 'success');
 });
@@ -221,20 +301,37 @@ function renderSavedList() {
     <div class="saved-item" data-id="${m.id}">
       <div class="saved-item-info">
         <div class="saved-item-title">${m.title}</div>
-        <div class="saved-item-meta">${m.year} · ${'★'.repeat(m.nota || 0)}${'&#9734;'.repeat(5 - (m.nota || 0))} (${m.nota || '?'}/5)</div>
+        <div class="saved-item-meta">${m.year} · ${'★'.repeat(m.nota || 0)}${'&#9734;'.repeat(5 - (m.nota || 0))} (${m.nota || '?'}/5) · por ${m.addedByName || '—'}</div>
       </div>
-      <button class="saved-item-remove" data-remove="${m.id}" title="Remover">×</button>
+      ${m.canDelete ? `
+        <div class="saved-item-actions">
+          <button class="saved-item-edit" data-edit="${m.id}" title="Editar">✎</button>
+          <button class="saved-item-remove" data-remove="${m.id}" title="Remover">×</button>
+        </div>
+      ` : ''}
     </div>
   `).join('');
 
-  savedList.querySelectorAll('.saved-item-remove').forEach(btn => {
+  savedList.querySelectorAll('.saved-item-edit').forEach(btn => {
     btn.addEventListener('click', () => {
+      iniciarEdicao(parseInt(btn.dataset.edit));
+    });
+  });
+
+  savedList.querySelectorAll('.saved-item-remove').forEach(btn => {
+    btn.addEventListener('click', async () => {
       const id = parseInt(btn.dataset.remove);
       const removed = movies.find(m => m.id === id);
-      movies = CineLogStorage.removeMovie(id);
-      renderSavedList();
-      updateSavedCount();
-      if (removed) showToast(`"${removed.title}" removido.`, 'success');
+      try {
+        await CineLogStorage.removeMovie(id);
+        movies = movies.filter(m => m.id !== id);
+        if (editingId === id) cancelarEdicao();
+        renderSavedList();
+        updateSavedCount();
+        if (removed) showToast(`"${removed.title}" removido.`, 'success');
+      } catch (err) {
+        showToast(err.message || 'Não foi possível remover o filme.', 'error');
+      }
     });
   });
 }
@@ -242,7 +339,6 @@ function renderSavedList() {
 function updateSavedCount() {
   savedCount.textContent = movies.length;
 }
-
 
 btnExport.addEventListener('click', () => {
   if (movies.length === 0) {
@@ -272,3 +368,13 @@ document.addEventListener('keydown', e => {
     resetModal.classList.add('hidden');
   }
 });
+
+(async function init() {
+  try {
+    movies = await CineLogStorage.getMovies();
+  } catch (e) {
+    movies = [];
+  }
+  renderSavedList();
+  updateSavedCount();
+})();

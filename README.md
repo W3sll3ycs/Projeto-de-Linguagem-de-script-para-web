@@ -8,23 +8,22 @@ Projeto desenvolvido para a disciplina de **Linguagem de Script para Web** do cu
 
 ## 📋 Sobre o Projeto
 
-**Corte Seletivo** é uma aplicação web de catálogo de filmes com tema escuro, que permite ao usuário explorar um acervo curado de títulos, filtrar por gênero, buscar por nome, visualizar detalhes em modal, adicionar novos filmes e receber recomendações baseadas em gênero.
+**Corte Seletivo** é uma aplicação web de catálogo de filmes com tema escuro, que permite ao usuário explorar um acervo curado de títulos, filtrar por gênero, buscar por nome, visualizar detalhes em modal, adicionar/editar/remover filmes e receber recomendações baseadas em gênero.
 
-O front-end foi construído com **HTML semântico, CSS puro e JavaScript Vanilla**, sem dependência de frameworks. O projeto também conta com um **back-end em Node.js/Express + SQLite**, responsável pela API de autenticação e pelo catálogo de filmes compartilhado entre usuários.
+O front-end foi construído com **HTML semântico, CSS puro e JavaScript Vanilla**, sem dependência de frameworks. A partir do Miniprojeto 2, o projeto consome uma **API REST simulada com json-server**, substituindo a leitura de dados locais por chamadas assíncronas (`fetch` + `async/await`).
 
 ---
 
 ## 🗂️ Estrutura de Pastas
 
 ```
-Projeto-de-Linguagem-de-script-para-web/
+corte-seletivo/
 ├── index.html                # Página principal — catálogo de filmes
 ├── javascript.js             # Lógica de filtros, busca e modal da home
 ├── style.css                 # Estilos globais
-├── storage.js                # Módulo único de persistência no localStorage (chave "cinelog_movies")
 │
-├── adicionarfilmes.html      # Formulário de cadastro de filmes
-├── adicionarfilmes.js        # Lógica do formulário, validação e persistência
+├── adicionarfilmes.html      # Formulário de cadastro/edição de filmes
+├── adicionarfilmes.js        # Lógica do formulário, validação e chamadas GET/POST/PUT/DELETE
 ├── adicionarfilmes.css       # Estilos da página de adição
 │
 ├── login.html                # Página de login
@@ -36,17 +35,11 @@ Projeto-de-Linguagem-de-script-para-web/
 ├── recomendados.js            # Lógica de filtragem por gênero
 ├── recomendados.css           # Estilos da página de recomendados
 │
-├── Imagens/                   # Capas dos filmes do catálogo
+├── storage.js                 # Camada de acesso à API (fetch + async/await)
+├── db.json                    # Base de dados usada pelo json-server (Etapa 0)
+├── package.json                # Dependência e script do json-server
 │
-└── backend/                   # API REST (Node.js + Express + SQLite)
-    ├── server.js               # Ponto de entrada: serve o site estático e expõe /api
-    ├── db.js                   # Conexão e schema do banco (tabelas users e filmes)
-    ├── package.json             # Dependências e scripts do back-end
-    ├── middleware/
-    │   └── auth.js              # Middleware de autenticação via JWT (requireAuth / optionalAuth)
-    └── routes/
-        ├── auth.routes.js       # Rotas POST /api/auth/cadastro e /api/auth/login
-        └── filmes.routes.js     # Rotas GET/POST/DELETE /api/filmes
+└── Imagens/                   # Capas dos filmes do catálogo
 ```
 
 ---
@@ -69,8 +62,8 @@ Projeto-de-Linguagem-de-script-para-web/
 - Toggle para marcar o filme como **Destaque**
 - **Validação de campos obrigatórios** (título, ano, nota, ao menos um gênero)
 - Contador de caracteres na sinopse (limite: 600 caracteres)
-- Persistência via **`localStorage`** com `JSON.stringify` / `JSON.parse` (módulo `storage.js`)
-- Lista dos filmes salvos com opção de **remoção individual**
+- Persistência via **API (json-server)**, com chamadas `fetch` assíncronas (`GET`/`POST`/`PUT`/`DELETE`)
+- Lista dos filmes salvos com opção de **edição** (PUT) e **remoção** (DELETE) individual — somente para quem adicionou o filme
 - **Exportação em JSON** do catálogo adicionado
 - Modal de confirmação para reset do formulário
 - Notificações **toast** de sucesso e erro
@@ -82,7 +75,7 @@ Projeto-de-Linguagem-de-script-para-web/
 - Indicador visual de **força da senha** em 4 níveis (Fraca → Forte) com barras coloridas
 - Toggle de **mostrar/ocultar senha**
 - Feedback inline de erros por campo (`.has-error` / `.is-valid`)
-- Persistência do usuário no `localStorage` (chave `usuario_corte_seletivo`)
+- Sessão do usuário guardada no `localStorage` (chave `cinelog_sessao`); cadastro e login feitos via API (json-server)
 - Animação de carregamento (loader) e mensagem de sucesso antes do redirecionamento
 - Ticker animado com títulos de filmes clássicos
 
@@ -91,15 +84,7 @@ Projeto-de-Linguagem-de-script-para-web/
 - Exibe apenas filmes com nota ≥ 4.0
 - Busca textual que percorre todos os gêneros do filme com `Array.some()`
 - Estado vazio personalizado quando nenhum resultado é encontrado
-- Base de dados com os mesmos 30 títulos do catálogo principal
-
-### 🖥️ Back-end (`backend/`)
-- API REST construída com **Express**, rodando sobre o mesmo diretório do site (serve os arquivos estáticos e a API na mesma porta)
-- Banco de dados **SQLite** (via `node:sqlite`, nativo do Node 22+), com tabelas `users` e `filmes`
-- **Cadastro e login** de usuários (`POST /api/auth/cadastro`, `POST /api/auth/login`), com senha criptografada via `bcryptjs` e sessão via **token JWT**
-- **Listagem, criação e exclusão de filmes** (`GET`, `POST`, `DELETE /api/filmes`), com regra de que **apenas quem cadastrou um filme pode excluí-lo**
-- Middleware de autenticação (`requireAuth` / `optionalAuth`) para proteger rotas sensíveis
-- > **Nota:** o back-end já está implementado e funcional, mas as páginas HTML/JS ainda operam com **`localStorage`** para os filmes e a sessão do usuário — a integração do front-end com a API (`fetch`) é o próximo passo do projeto.
+- Base de dados com os mesmos 30 títulos do catálogo principal, mais os filmes adicionados por usuários (com selo "Adicionado por")
 
 ---
 
@@ -112,46 +97,42 @@ Projeto-de-Linguagem-de-script-para-web/
 | JavaScript ES6+ | Filtros, validações, DOM, eventos |
 | [Lucide Icons](https://lucide.dev/) | Ícones via CDN (`unpkg`) |
 | Google Fonts | Tipografias Playfair Display, DM Mono e Inter |
-| `localStorage` | Persistência de filmes e sessão de usuário no front-end |
-| Node.js + Express | Servidor de arquivos estáticos e API REST |
-| SQLite (`node:sqlite`) | Banco de dados do back-end (usuários e filmes) |
-| `bcryptjs` | Hash de senhas |
-| `jsonwebtoken` (JWT) | Autenticação por token nas rotas da API |
+| `localStorage` | Persistência da sessão de usuário |
+| [json-server](https://github.com/typicode/json-server) | API REST simulada (GET/POST/PUT/DELETE) a partir do `db.json` |
+| Fetch API + async/await | Consumo assíncrono da API (`storage.js`) |
 
 ---
 
-## 🚀 Como Executar
+## 🚀 Como Executar (Miniprojeto 2 — json-server)
 
-### Opção 1 — Somente front-end (sem back-end)
-
-Como o front-end funciona de forma independente usando `localStorage`, basta abrir o arquivo HTML no navegador:
+Seguindo a Etapa 0 do Miniprojeto 2, a "API" do projeto é simulada com **json-server** a partir do `db.json` — sem backend próprio.
 
 ```bash
-# Clone o repositório
-git clone https://github.com/seu-usuario/Projeto-de-Linguagem-de-script-para-web.git
-
-# Abra a página principal no navegador
-# Abra o arquivo index.html diretamente, ou use uma extensão como Live Server no VS Code
-```
-
-> **Recomendado:** use a extensão **Live Server** do VS Code para evitar restrições de CORS ao carregar imagens e recursos locais.
-
-### Opção 2 — Com o back-end (API + banco de dados)
-
-Requer **Node.js 22.5 ou superior** (usa o módulo nativo `node:sqlite`).
-
-```bash
-# Entre na pasta do back-end
-cd backend
-
-# Instale as dependências
+# 1. Instale as dependências (json-server)
 npm install
 
-# Inicie o servidor
-npm start
+# 2. Suba a API simulada (fica em http://localhost:3000)
+npm run json-server
 ```
 
-Depois é só abrir **http://localhost:3000** — o próprio servidor Express serve o site estático (`index.html`, CSS, JS, `Imagens/`) e expõe a API em `/api/auth` e `/api/filmes`. O banco SQLite é criado automaticamente em `backend/data/corte_seletivo.db` na primeira execução.
+Isso expõe automaticamente os endpoints REST para os dois recursos definidos em `db.json`: `/filmes` e `/usuarios`.
+
+Como o json-server só serve a API (não os arquivos estáticos do site), abra o `index.html` com um servidor local à parte — por exemplo a extensão **Live Server** do VS Code, ou `npx serve` em outra porta. O json-server já vem com CORS liberado por padrão, então não há problema em consumi-lo de outra porta.
+
+### 🔌 API (`db.json` via json-server)
+
+| Rota | Método | Descrição |
+|---|---|---|
+| `/filmes` | GET | Lista todos os filmes adicionados por usuários |
+| `/filmes` | POST | Adiciona um filme (fica associado ao usuário logado) |
+| `/filmes/:id` | PUT | Edita um filme existente (só quem adicionou pode editar) |
+| `/filmes/:id` | DELETE | Remove um filme (só quem adicionou pode excluir) |
+| `/usuarios` | POST | Cria uma conta (`nome`, `email`, `senha`) |
+| `/usuarios?email=&senha=` | GET | Usado para simular o login (filtra por e-mail/senha) |
+
+> **Nota:** os 30 títulos curados originais do catálogo continuam fixos no HTML/JS (`index.html`, `recomendados.js`) — só os filmes adicionados via formulário (POST/PUT/DELETE) vivem no `db.json`.
+>
+> **Sobre segurança:** o json-server é um mock de API para fins didáticos — ele não faz hash de senha nem emite token real. A "sessão" de login aqui é só o objeto do usuário salvo no `localStorage`, e a regra de "só o dono edita/exclui" é aplicada no `storage.js` (lado do cliente), não no servidor. Isso é aceitável para o escopo do Miniprojeto 2, mas **não deve ser usado como está em um backend de produção**.
 
 ---
 
@@ -167,32 +148,25 @@ index.html  ──────────────────────�
 
 ---
 
-## 📌 Conceitos Aplicados
+## 📌 Conceitos de JavaScript Aplicados
 
-**Front-end**
 - Manipulação de DOM com `querySelector`, `querySelectorAll`, `createElement`
 - Eventos: `addEventListener`, `input`, `click`, `keydown`, `submit`
 - `e.preventDefault()` para controle de submissão de formulários
 - `Array.filter()` para filtragem de recomendações
 - `Array.some()` para verificação de gêneros
-- `JSON.stringify` / `JSON.parse` para persistência em `localStorage`
+- `fetch` com `async/await` e `try/catch` para consumo da API REST (`GET`, `POST`, `PUT`, `DELETE`)
+- `JSON.stringify` / `JSON.parse` para montar/ler os corpos das requisições e a sessão no `localStorage`
 - Regex para validação de e-mail e critérios de senha
 - `setTimeout` para animações de feedback
 - `URL.createObjectURL` para exportação de arquivo JSON
 - Fechamento de modal com `Escape` via evento global de teclado
 
-**Back-end**
-- API REST com **Express** (rotas, middlewares, `express.json()`, `cors`)
-- Modelagem de banco relacional em **SQLite** (chave estrangeira `user_id` com `ON DELETE CASCADE`)
-- Autenticação **stateless** com **JWT** (`jsonwebtoken`) e hash de senha com **bcrypt**
-- Middlewares de autorização (`requireAuth` obrigatório vs. `optionalAuth` opcional)
-- Separação de responsabilidades em rotas (`routes/`), middleware (`middleware/`) e acesso a dados (`db.js`)
-
 ---
 
 ## 👥 Colaboradores
 
-Desenvolvido por estudantes de ADS no IFPB:
+Desenvolvido por estudantes de ADS do IFPB:
 
 - **Weslley Casimiro**
 - **Pedro Henrique**

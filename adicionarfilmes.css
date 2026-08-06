@@ -144,6 +144,23 @@ body {
   max-width: 480px;
 }
 
+.login-required-banner {
+  margin-top: 1.25rem;
+  padding: 0.9rem 1.1rem;
+  max-width: 560px;
+  background: rgba(214, 168, 67, 0.08);
+  border: 1px solid rgba(214, 168, 67, 0.35);
+  color: var(--fg);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.login-required-banner a {
+  color: var(--gold);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .layout {
   display: grid;
   grid-template-columns: 1fr 300px;
@@ -535,6 +552,14 @@ body {
   margin-top: 1px;
 }
 
+.saved-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.saved-item-edit,
 .saved-item-remove {
   background: none;
   border: none;
@@ -545,6 +570,7 @@ body {
   transition: color 0.2s;
   flex-shrink: 0;
 }
+.saved-item-edit:hover { color: var(--accent, #6c8cff); }
 .saved-item-remove:hover { color: var(--danger); }
 
 .btn-export {

@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.disabled = true;
     btnText.style.opacity = '0.5';
     btnLoader.classList.remove('hidden');
-    btnLoader.style.display = 'inline-block'; 
+    btnLoader.style.display = 'inline-block';
 
     setTimeout(() => {
       btnLoader.classList.add('hidden');
@@ -112,11 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         window.location.href = redirectUrl;
       }, 1500);
-    }, 2000);
+    }, 800);
+  }
+
+  function pararLoading(button) {
+    button.disabled = false;
   }
 
   if (formLogin) {
-    formLogin.addEventListener('submit', (e) => {
+    formLogin.addEventListener('submit', async (e) => {
       e.preventDefault();
       let isValid = true;
 
@@ -141,22 +145,23 @@ document.addEventListener('DOMContentLoaded', () => {
         setValid(passGroup, passError);
       }
 
-      if (isValid) {
-        const contaSalva = JSON.parse(localStorage.getItem('usuario_corte_seletivo'));
+      if (!isValid) return;
 
-        if (contaSalva && contaSalva.email === emailInput.value.trim() && contaSalva.senha === passInput.value) {
-          localStorage.setItem('sessao_ativa', 'true');
-          executeSubmit(document.getElementById('loginSubmit'), document.getElementById('loginSuccess'), 'index.html');
-        } else {
-          setError(emailGroup, emailError, 'E-mail ou senha incorretos.');
-          setError(passGroup, passError, '');
-        }
+      const loginBtn = document.getElementById('loginSubmit');
+      try {
+        loginBtn.disabled = true;
+        await CineLogStorage.login(emailInput.value.trim(), passInput.value);
+        executeSubmit(loginBtn, document.getElementById('loginSuccess'), 'index.html');
+      } catch (err) {
+        pararLoading(loginBtn);
+        setError(emailGroup, emailError, err.message || 'E-mail ou senha incorretos.');
+        setError(passGroup, passError, '');
       }
     });
   }
 
   if (formRegister) {
-    formRegister.addEventListener('submit', (e) => {
+    formRegister.addEventListener('submit', async (e) => {
       e.preventDefault();
       let isFormValid = true;
 
@@ -212,15 +217,16 @@ document.addEventListener('DOMContentLoaded', () => {
         termsError.textContent = '';
       }
 
-      if (isFormValid) {
-        const novoUsuario = {
-          nome: nameInput.value.trim(),
-          email: emailInput.value.trim(),
-          senha: passInput.value
-        };
+      if (!isFormValid) return;
 
-        localStorage.setItem('usuario_corte_seletivo', JSON.stringify(novoUsuario));
-        executeSubmit(document.getElementById('registerSubmit'), document.getElementById('registerSuccess'), 'login.html');
+      const registerBtn = document.getElementById('registerSubmit');
+      try {
+        registerBtn.disabled = true;
+        await CineLogStorage.cadastrar(nameInput.value.trim(), emailInput.value.trim(), passInput.value);
+        executeSubmit(registerBtn, document.getElementById('registerSuccess'), 'login.html');
+      } catch (err) {
+        pararLoading(registerBtn);
+        setError(emailGroup, emailError, err.message || 'Não foi possível concluir o cadastro.');
       }
     });
   }
